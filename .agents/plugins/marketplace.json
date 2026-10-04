@@ -1,0 +1,44 @@
+{
+  "name": "blazium-games-skills",
+  "interface": {
+    "displayName": "Blazium Games Skills"
+  },
+  "plugins": [
+    {
+      "name": "blazium-games-developer",
+      "source": {
+        "source": "local",
+        "path": "./plugins/blazium-games-developer"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "blazium-games-player",
+      "source": {
+        "source": "local",
+        "path": "./plugins/blazium-games-player"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "blazium-games",
+      "source": {
+        "source": "local",
+        "path": "./plugins/blazium-games"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

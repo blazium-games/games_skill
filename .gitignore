@@ -1,0 +1,5 @@
+plugins/*/skills/
+plugins/*/mcp.json
+dist/
+__pycache__/
+*.pyc

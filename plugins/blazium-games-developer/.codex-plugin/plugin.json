@@ -1,0 +1,18 @@
+{
+  "interface": {
+    "displayName": "Blazium Games Developer",
+    "shortDescription": "Publish on Blazium Games: store pages, builds, crashes, analytics, and keys.",
+    "longDescription": "Publish on Blazium Games: store pages, builds, crashes, analytics, and keys.",
+    "developerName": "Blazium Games",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://docs.blazium.games",
+    "defaultPrompt": [
+      "Use Blazium Games skills for the store at blazium.games.",
+      "Publish on Blazium Games: store pages, builds, crashes, analytics, and keys."
+    ]
+  }
+}

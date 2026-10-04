@@ -1,0 +1,324 @@
+name: Build and Publish Games Skills
+
+on:
+  push:
+    branches: [main, master]
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate skills and marketplace paths
+        run: python scripts/validate_packs.py
+
+  resolve-version:
+    needs: validate
+    runs-on: ubuntu-latest
+    outputs:
+      simple_version: ${{ steps.finalize.outputs.simple_version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get Version with Bioblaze/game-semver-action
+        if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+        uses: Bioblaze/game-semver-action@v10
+        id: version
+        with:
+          personal_github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Finalize version (0.1.0 floor, CDN and npm monotonic)
+        id: finalize
+        run: |
+          set -euo pipefail
+          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            CANDIDATE="${GITHUB_REF#refs/tags/v}"
+          else
+            COMPUTED="${{ steps.version.outputs.simple_version }}"
+            BASE="0.1.0"
+            CDN_LATEST="$(curl -fsSL -H 'Cache-Control: no-cache' https://cdn.blazium.app/games-skills/skills.json | jq -r '.latest // empty' || true)"
+            NPM_LATEST="$(curl -fsSL -H 'Cache-Control: no-cache' https://registry.npmjs.org/@blazium-games%2fskills/latest | jq -r '.version // empty' || true)"
+            if [[ "$CDN_LATEST" == "null" ]]; then
+              CDN_LATEST=""
+            fi
+            if [[ "$NPM_LATEST" == "null" ]]; then
+              NPM_LATEST=""
+            fi
+            CANDIDATE="$(printf '%s\n%s\n' "$COMPUTED" "$BASE" | sort -V | tail -n1)"
+            bump_patch() {
+              local v="$1" major minor patch
+              IFS=. read -r major minor patch <<< "$v"
+              patch="${patch%%[^0-9]*}"
+              echo "${major}.${minor}.$((patch + 1))"
+            }
+            FLOOR="$(printf '%s\n%s\n' "$CDN_LATEST" "$NPM_LATEST" | sed '/^$/d' | sort -V | tail -n1 || true)"
+            if [[ -n "$FLOOR" ]]; then
+              HIGHER="$(printf '%s\n%s\n' "$CANDIDATE" "$FLOOR" | sort -V | tail -n1)"
+              if [[ "$HIGHER" == "$FLOOR" ]]; then
+                CANDIDATE="$(bump_patch "$FLOOR")"
+              fi
+            fi
+            occupied() {
+              local v="$1" code
+              code="$(curl -s -o /dev/null -w '%{http_code}' -H 'Cache-Control: no-cache' "https://cdn.blazium.app/games-skills/${v}/skills.json" || true)"
+              if [[ "$code" == "200" ]]; then
+                return 0
+              fi
+              code="$(curl -s -o /dev/null -w '%{http_code}' -H 'Cache-Control: no-cache' "https://registry.npmjs.org/@blazium-games%2fskills/${v}" || true)"
+              [[ "$code" == "200" ]]
+            }
+            for _ in 1 2 3 4 5 6 7 8; do
+              if occupied "$CANDIDATE"; then
+                echo "occupied ${CANDIDATE}"
+                CANDIDATE="$(bump_patch "$CANDIDATE")"
+              else
+                break
+              fi
+            done
+            echo "computed=${COMPUTED} base=${BASE} cdn_latest=${CDN_LATEST:-none} npm_latest=${NPM_LATEST:-none} => ${CANDIDATE}"
+          fi
+          test -n "$CANDIDATE"
+          echo "simple_version=${CANDIDATE}" >> "$GITHUB_OUTPUT"
+
+  pack-claude:
+    needs: [validate, resolve-version]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Zip Claude marketplace
+        run: |
+          VER="${{ needs.resolve-version.outputs.simple_version }}"
+          STAGE="blazium-games-skills-claude-${VER}"
+          mkdir -p "${STAGE}"
+          cp -a skills .claude-plugin mcp.json README.md LICENSE GROK.md "${STAGE}/"
+          zip -r "${STAGE}.zip" "${STAGE}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: claude
+          path: blazium-games-skills-claude-*.zip
+
+  pack-cursor:
+    needs: [validate, resolve-version]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Zip Cursor plugins
+        run: |
+          python scripts/sync_packs.py
+          VER="${{ needs.resolve-version.outputs.simple_version }}"
+          STAGE="blazium-games-skills-cursor-${VER}"
+          mkdir -p "${STAGE}"
+          cp -a plugins .cursor-plugin mcp.json README.md LICENSE GROK.md "${STAGE}/"
+          zip -r "${STAGE}.zip" "${STAGE}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cursor
+          path: blazium-games-skills-cursor-*.zip
+
+  pack-codex:
+    needs: [validate, resolve-version]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Zip Codex plugins
+        run: |
+          python scripts/sync_packs.py
+          VER="${{ needs.resolve-version.outputs.simple_version }}"
+          STAGE="blazium-games-skills-codex-${VER}"
+          mkdir -p "${STAGE}"
+          cp -a plugins .agents mcp.json README.md LICENSE GROK.md "${STAGE}/"
+          zip -r "${STAGE}.zip" "${STAGE}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: codex
+          path: blazium-games-skills-codex-*.zip
+
+  publish:
+    needs: [resolve-version, pack-claude, pack-cursor, pack-codex]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: claude
+          path: dist/claude
+      - uses: actions/download-artifact@v4
+        with:
+          name: cursor
+          path: dist/cursor
+      - uses: actions/download-artifact@v4
+        with:
+          name: codex
+          path: dist/codex
+
+      - name: Require every pack and write skills.json
+        env:
+          VERSION: ${{ needs.resolve-version.outputs.simple_version }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          version = os.environ["VERSION"]
+          hosts = {}
+          for host in ("claude", "cursor", "codex"):
+              matches = list(Path("dist").joinpath(host).glob("*.zip"))
+              if len(matches) != 1:
+                  raise SystemExit(f"{host}: expected 1 zip, found {matches}")
+              data = matches[0].read_bytes()
+              hosts[host] = {
+                  "file": matches[0].name,
+                  "sha256": hashlib.sha256(data).hexdigest(),
+                  "size": len(data),
+                  "path": str(matches[0]),
+              }
+          catalog = {
+              "latest": version,
+              "versions": {version: {"hosts": {k: {kk: vv for kk, vv in v.items() if kk != "path"} for k, v in hosts.items()}}},
+          }
+          Path("skills.json").write_text(json.dumps(catalog, indent=2) + "\n", encoding="utf-8")
+          Path("pack-paths.txt").write_text("\n".join(f"{k} {v['path']}" for k, v in hosts.items()) + "\n", encoding="utf-8")
+          PY
+
+      - uses: BetaHuhn/do-spaces-action@v2
+        with:
+          access_key: ${{ secrets.DO_ACCESS_KEY }}
+          secret_key: ${{ secrets.DO_SECRET_KEY }}
+          space_name: ${{ secrets.DO_SPACE_NAME }}
+          space_region: ${{ secrets.DO_SPACE_REGION }}
+          source: dist/claude
+          out_dir: games-skills/${{ needs.resolve-version.outputs.simple_version }}
+
+      - uses: BetaHuhn/do-spaces-action@v2
+        with:
+          access_key: ${{ secrets.DO_ACCESS_KEY }}
+          secret_key: ${{ secrets.DO_SECRET_KEY }}
+          space_name: ${{ secrets.DO_SPACE_NAME }}
+          space_region: ${{ secrets.DO_SPACE_REGION }}
+          source: dist/cursor
+          out_dir: games-skills/${{ needs.resolve-version.outputs.simple_version }}
+
+      - uses: BetaHuhn/do-spaces-action@v2
+        with:
+          access_key: ${{ secrets.DO_ACCESS_KEY }}
+          secret_key: ${{ secrets.DO_SECRET_KEY }}
+          space_name: ${{ secrets.DO_SPACE_NAME }}
+          space_region: ${{ secrets.DO_SPACE_REGION }}
+          source: dist/codex
+          out_dir: games-skills/${{ needs.resolve-version.outputs.simple_version }}
+
+      - uses: BetaHuhn/do-spaces-action@v2
+        with:
+          access_key: ${{ secrets.DO_ACCESS_KEY }}
+          secret_key: ${{ secrets.DO_SECRET_KEY }}
+          space_name: ${{ secrets.DO_SPACE_NAME }}
+          space_region: ${{ secrets.DO_SPACE_REGION }}
+          source: skills.json
+          out_dir: games-skills
+
+      - uses: BetaHuhn/do-spaces-action@v2
+        with:
+          access_key: ${{ secrets.DO_ACCESS_KEY }}
+          secret_key: ${{ secrets.DO_SECRET_KEY }}
+          space_name: ${{ secrets.DO_SPACE_NAME }}
+          space_region: ${{ secrets.DO_SPACE_REGION }}
+          source: skills.json
+          out_dir: games-skills/${{ needs.resolve-version.outputs.simple_version }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+
+      - name: Publish npm package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+          VERSION: ${{ needs.resolve-version.outputs.simple_version }}
+        run: |
+          set -euo pipefail
+          test -n "$NODE_AUTH_TOKEN"
+          test -n "$VERSION"
+          node -e 'const fs=require("fs"); const v=process.env.VERSION; if(!/^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$/.test(v)) process.exit(1); const p=JSON.parse(fs.readFileSync("package.json","utf8")); if(p.name!=="@blazium-games/skills") process.exit(1); p.version=v; fs.writeFileSync("package.json", JSON.stringify(p,null,2)+"\n"); console.log(p.name+"@"+p.version);'
+          npm publish --access public
+
+      - name: Register with Cerebro
+        env:
+          CEREBRO_URL: ${{ secrets.CEREBRO_URL }}
+          BLAZIUM_AUTH: ${{ secrets.BLAZIUM_AUTH }}
+          VERSION: ${{ needs.resolve-version.outputs.simple_version }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, os, urllib.request
+          from datetime import datetime, timezone
+          version = os.environ["VERSION"]
+          catalog = json.load(open("skills.json", encoding="utf-8"))
+          hosts = catalog["versions"][version]["hosts"]
+          url = os.environ["CEREBRO_URL"].rstrip("/") + "/api/v1/tools"
+          auth = os.environ["BLAZIUM_AUTH"]
+          released = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+          for host, meta in hosts.items():
+              body = {
+                  "name": "Blazium Games Skills",
+                  "type": "games-skills",
+                  "version": version,
+                  "os": host,
+                  "arch": "pack",
+                  "file": f"https://cdn.blazium.app/games-skills/{version}/{meta['file']}",
+                  "sig": "",
+                  "sha256": meta["sha256"],
+                  "size": meta["size"],
+                  "signing": "",
+                  "released_on": released,
+              }
+              req = urllib.request.Request(url, data=json.dumps(body).encode(), headers={
+                  "Content-Type": "application/json",
+                  "BLAZIUM_AUTH": auth,
+              })
+              with urllib.request.urlopen(req, timeout=60) as resp:
+                  print(host, resp.status)
+          PY
+
+      - name: Create or update GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VER: ${{ needs.resolve-version.outputs.simple_version }}
+        run: |
+          set -euo pipefail
+          TAG="v${VER}"
+          mapfile -t FILES < <(find dist -type f -name '*.zip' | sort)
+          test "${#FILES[@]}" -eq 3
+          NOTES="Blazium Games Skills ${VER}
+
+          | Host | Zip |
+          |------|-----|
+          | Claude | \`blazium-games-skills-claude-${VER}.zip\` |
+          | Cursor | \`blazium-games-skills-cursor-${VER}.zip\` |
+          | Codex | \`blazium-games-skills-codex-${VER}.zip\` |
+
+          CDN: https://cdn.blazium.app/games-skills/skills.json
+          npm: @blazium-games/skills
+          "
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "${FILES[@]}" --clobber
+          else
+            gh release create "$TAG" "${FILES[@]}" --title "Blazium Games Skills ${VER}" --notes "$NOTES" --target "$GITHUB_SHA"
+          fi

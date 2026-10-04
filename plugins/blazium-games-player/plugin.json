@@ -1,0 +1,15 @@
+{
+  "name": "blazium-games-player",
+  "version": "0.1.0",
+  "description": "Play on Blazium Games: search, reviews, friends, and purchases inside a spending limit.",
+  "author": {
+    "name": "Blazium Games"
+  },
+  "homepage": "https://docs.blazium.games",
+  "license": "MIT",
+  "keywords": [
+    "blazium",
+    "blazium-games",
+    "skills"
+  ]
+}

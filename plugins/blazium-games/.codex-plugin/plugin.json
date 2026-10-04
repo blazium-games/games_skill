@@ -1,0 +1,18 @@
+{
+  "interface": {
+    "displayName": "Blazium Games",
+    "shortDescription": "Blazium Games developer and player skills, plus the developer and player MCP servers.",
+    "longDescription": "Blazium Games developer and player skills, plus the developer and player MCP servers.",
+    "developerName": "Blazium Games",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://docs.blazium.games",
+    "defaultPrompt": [
+      "Use Blazium Games skills for the store at blazium.games.",
+      "Blazium Games developer and player skills, plus the developer and player MCP servers."
+    ]
+  }
+}

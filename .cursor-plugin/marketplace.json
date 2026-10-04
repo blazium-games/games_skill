@@ -1,0 +1,26 @@
+{
+  "name": "blazium-games-skills",
+  "owner": {
+    "name": "Blazium Games"
+  },
+  "metadata": {
+    "description": "Agent skills for the Blazium Games platform. Not the Blazium engine."
+  },
+  "plugins": [
+    {
+      "name": "blazium-games-developer",
+      "source": "./plugins/blazium-games-developer",
+      "description": "Publish on Blazium Games: store pages, builds, crashes, analytics, and keys."
+    },
+    {
+      "name": "blazium-games-player",
+      "source": "./plugins/blazium-games-player",
+      "description": "Play on Blazium Games: search, reviews, friends, and purchases inside a spending limit."
+    },
+    {
+      "name": "blazium-games",
+      "source": "./plugins/blazium-games",
+      "description": "Blazium Games developer and player skills, plus the developer and player MCP servers."
+    }
+  ]
+}

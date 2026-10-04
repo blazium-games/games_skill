@@ -1,0 +1,19 @@
+{
+  "name": "blazium-games-developer",
+  "displayName": "Blazium Games Developer",
+  "version": "0.1.0",
+  "description": "Publish on Blazium Games: store pages, builds, crashes, analytics, and keys.",
+  "author": {
+    "name": "Blazium Games",
+    "email": "support@blazium.games"
+  },
+  "homepage": "https://docs.blazium.games",
+  "repository": "https://github.com/blazium-games/games_skill",
+  "license": "MIT",
+  "keywords": [
+    "blazium",
+    "blazium-games",
+    "skills"
+  ],
+  "skills": "./skills/"
+}

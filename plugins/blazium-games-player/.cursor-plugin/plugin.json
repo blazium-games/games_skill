@@ -1,0 +1,19 @@
+{
+  "name": "blazium-games-player",
+  "displayName": "Blazium Games Player",
+  "version": "0.1.0",
+  "description": "Play on Blazium Games: search, reviews, friends, and purchases inside a spending limit.",
+  "author": {
+    "name": "Blazium Games",
+    "email": "support@blazium.games"
+  },
+  "homepage": "https://docs.blazium.games",
+  "repository": "https://github.com/blazium-games/games_skill",
+  "license": "MIT",
+  "keywords": [
+    "blazium",
+    "blazium-games",
+    "skills"
+  ],
+  "skills": "./skills/"
+}

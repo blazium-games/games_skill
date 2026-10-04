@@ -1,0 +1,18 @@
+{
+  "interface": {
+    "displayName": "Blazium Games Player",
+    "shortDescription": "Play on Blazium Games: search, reviews, friends, and purchases inside a spending limit.",
+    "longDescription": "Play on Blazium Games: search, reviews, friends, and purchases inside a spending limit.",
+    "developerName": "Blazium Games",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://docs.blazium.games",
+    "defaultPrompt": [
+      "Use Blazium Games skills for the store at blazium.games.",
+      "Play on Blazium Games: search, reviews, friends, and purchases inside a spending limit."
+    ]
+  }
+}

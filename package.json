@@ -1,0 +1,23 @@
+{
+  "name": "@blazium-games/skills",
+  "version": "0.0.0",
+  "description": "Agent skills for the Blazium Games platform.",
+  "repository": "https://github.com/blazium-games/games_skill",
+  "license": "MIT",
+  "files": [
+    "skills",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "homepage": "https://blazium.games",
+  "bugs": "https://github.com/blazium-games/games_skill/issues",
+  "author": "Blazium Games",
+  "keywords": [
+    "blazium",
+    "blazium-games",
+    "skills"
+  ]
+}
