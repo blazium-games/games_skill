@@ -54,4 +54,5 @@ For crash trends, use `blazium-games-debug-crash` instead.
 
 ## Docs
 
-https://docs.blazium.games/docs/mcp/reference
+- https://docs.blazium.games/docs/download-analytics
+- https://docs.blazium.games/docs/mcp/reference

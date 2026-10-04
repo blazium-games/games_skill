@@ -7,6 +7,8 @@
   "files": [
     "skills",
     "README.md",
+    "SKILL_TREE.md",
+    "GROK.md",
     "LICENSE"
   ],
   "publishConfig": {

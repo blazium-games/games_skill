@@ -78,6 +78,14 @@ def main() -> int:
     pkg = json.loads((ROOT / "package.json").read_text(encoding="utf-8"))
     if pkg.get("name") != "@blazium-games/skills":
         errors.append(f"package name is {pkg.get('name')!r}")
+    for doc in ("README.md", "SKILL_TREE.md", "GROK.md"):
+        text = (ROOT / doc).read_text(encoding="utf-8") if (ROOT / doc).is_file() else ""
+        if "docs.blazium.games" not in text:
+            errors.append(f"{doc}: missing docs.blazium.games")
+        if doc == "SKILL_TREE.md":
+            for skill in declared:
+                if skill not in text:
+                    errors.append(f"SKILL_TREE.md: missing {skill}")
     if errors:
         print("\n".join(errors), file=sys.stderr)
         return 1
