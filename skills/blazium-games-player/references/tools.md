@@ -34,7 +34,7 @@ Server: `https://mcp.blazium.games/player`. Scopes: `player:read`, `player:write
 | `get_shelf` | read | A home page shelf for the human's `os` (`limit` 1-24): `tonight` (short sessions with a healthy build), `unheard_of` (recent listings few people have found), `featured`, `new`, `recently_updated`, `made_with_blazium`, `in_development`, `browser_playable`, `community`, or `tools_and_assets`. `has_browser_build` and `has_downloads` say how each one plays |
 | `get_game_details` | read | One listing: taxonomy, price, files with scan state and checksum, similar titles, links to its pages on other stores (`store_links`), ownership |
 | `install_build` | read | License and scan check, checksum, 5-minute download URL, and a `blazium://install/<uid>` hand-off. Uses the channel the human follows unless `channel` is given. Fails unless the file is clean |
-| `launch_game` | read | `blazium://game/<uid>` hand-off link for the launcher |
+| `launch_game` | read | `blazium://game/<uid>` hand-off. The launcher remote is port 39220. `blazium://buy/<uid>` does not install. Chat is IRC on `irc.blazium.online:6697` |
 | `set_channel` | write | Join (`beta`) or leave (`stable`) a game's beta |
 | `why_should_i_trust_this` | read | Developer, upload provenance, scan history, checksums, and cautions for the current files. Never claims a file is safe |
 | `recommend` | read | Listings of one `asset_type` (default `game`) for right now from `minutes`, `party_size`, `intent`, `like_uid`, and platform. Deterministic; every result has `reasons` citing listing fields. Pass the reasons on instead of inventing your own |

@@ -2,7 +2,7 @@
 
 Agent skills for [Blazium Games](https://blazium.games), the store operated by Divine Games, Inc. They cover store pages, deploys, crash reporting, analytics, keys, and playing or buying games.
 
-This package is the store. It is not the engine skills at [`@blazium-engine/skills`](https://www.npmjs.com/package/@blazium-engine/skills), and it does not install Hub, the engine CLI, or the toolchain. A game on Blazium Games does not have to be made with the Blazium engine.
+This package is the store. It is not the engine skills at [`@blazium-engine/skills`](https://www.npmjs.com/package/@blazium-engine/skills), and it does not install Hub, the engine CLI, or the toolchain. A game on Blazium Games does not have to be made with the Blazium engine. The upload command is `chauffeur` from [`@blazium-games/cli`](https://www.npmjs.com/package/@blazium-games/cli).
 
 The guide and the in-repo Cursor plugin source stay in [games_docs](https://github.com/blazium-games/games_docs). This repo is the versioned release. The skill index, with links into the guide, is [SKILL_TREE.md](SKILL_TREE.md).
 

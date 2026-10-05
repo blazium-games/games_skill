@@ -20,7 +20,7 @@ Register a build, upload its files, and keep the returned `build_id` for crash r
 - The `blazium-games` MCP server is connected with write access (see `blazium-games-get-started`)
 - A store page exists. If not, run `blazium-games-store-page` first
 - The game owner's email is verified. Uploads for an unverified owner fail with code `4096`. Check with `get_account` (`email_verified`); if needed, call `request_email_code`, ask the human for the code, and call `verify_email`. A game admin cannot verify for the owner
-- chauffeur, from `https://cdn.blazium.online/tools/chauffeur/<platform>/latest/archive/default` where `<platform>` is `windows-amd64`, `linux-amd64`, `linux-arm64`, `darwin-amd64`, or `darwin-arm64`. The zip contains the `chauffeur` binary
+- chauffeur: `npm install -g @blazium-games/cli`. The CDN zip is still valid at `https://cdn.blazium.online/tools/chauffeur/<platform>/latest/archive/default` where `<platform>` is `windows-amd64`, `linux-amd64`, `linux-arm64`, `darwin-amd64`, or `darwin-arm64`. The zip contains the `chauffeur` binary
 
 ## 1. Read deploy info
 
