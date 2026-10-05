@@ -31,6 +31,12 @@ All tools call the Blazium Games API on behalf of the connected user. `uid` acce
 | `update_bug_ticket` | `uid`, `bug_uid`, `status` (`open`, `fixed`, `closed`) | write | Mark a ticket fixed or closed, or reopen it; covered by `mcp:crash.read` |
 | `list_copyright_notices` | none | | Paid copyright (DMCA) notices about the account's content, with status and how many of its links each names |
 | `get_copyright_notice` | `uid` | | One notice: claimant, work, statements, the account's named links, staff messages, decision, and `reply_to`. Read only; the human replies by email with the reference in the subject |
+| `get_game_chat` | `uid` | | The game's IRC channel (`irc_channel`), whether guests may join (`chat_guests`), and who is banned or muted with when each mute ends |
+| `set_chat_guests` | `uid`, `guests` | write | Let people without a license join the channel; they can read but can't talk until they own the game |
+| `ban_chat_user` | `uid`, `username` | write | Ban a user from the channel until unbanned; they are removed right away. The owner, admins, and `blazium` can't be banned. Only when the human asked |
+| `unban_chat_user` | `uid`, `username` | write | Lift a chat ban |
+| `suspend_chat_user` | `uid`, `username`, `minutes` (1-43200) | write | Mute a user for up to 30 days; they can still read. Only when the human asked |
+| `unsuspend_chat_user` | `uid`, `username` | write | Lift a chat mute |
 | `declare_dependency` | `uid`, `target_uid`, `kind`, `remove` | write | Link to another public listing: `uses`, `supports`, or `made_with` |
 | `list_dependents` | `uid` | | What a listing uses and which listings use it, plus license kind and compatibility |
 | `declare_engine_compat` | `uid`, `compat` | write | Replace the engine version ranges (engine, min/max version, renderer, platform) |

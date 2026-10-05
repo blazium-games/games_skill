@@ -85,7 +85,8 @@ If OAuth is not possible (headless CI, remote agents), use an API key instead. S
 | Investigate a crash | `blazium-games-debug-crash` |
 | Read visitor analytics | `blazium-games-analytics` |
 | Rotate MCP or deploy keys | `blazium-games-keys` |
-| Find, review, or play games as a player | `blazium-games-player` |
+| Moderate a game's chat channel (guests, bans, mutes) | `get_game_chat`, then `set_chat_guests`, `ban_chat_user`, or `suspend_chat_user` only when the human asks ([tools](./references/tools.md)) |
+| Find, review, or play games as a player, or get a chat token | `blazium-games-player` |
 | Buy a game or donate | `blazium-games-purchases` |
 
 ## References
