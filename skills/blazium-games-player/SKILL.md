@@ -49,6 +49,8 @@ The player server acts for one player. It sees the account, wallet, and library,
 | Report a bug | `report_bug` with what happened and how to reproduce it. If they have a crash dump or log, set `include_dump` / `include_log` and upload the file with `PUT` to the returned URL |
 | "What are my friends playing?" | `games_friends_play`; live games come first, then the last 14 days |
 | Add or answer a friend | `send_friend_request` with the username they gave you, or `list_friends` then `respond_friend_request`. Only send requests the human asked for |
+| Use game chat in their own IRC client | `get_chat_token_status` for the client settings. Only if they ask for a token, `request_chat_token` with `confirm: true` and give it to them straight away; it can't be shown again, and replacing it disconnects clients using the old one. Username is their Blazium Games username, password is the token, SASL PLAIN on `irc.blazium.online:6697` with TLS, then `/quote GAMEJOIN <game uid>`. Chat follows https://blazium.games/chat-rules |
+| Revoke a leaked chat token | `revoke_chat_token` with `confirm: true` when they ask |
 | Redeem a key or gift link | `redeem_key` with the code or link they gave you. `4084` means they already own it and the key is still unused |
 | Install a game they own or a free game | `why_should_i_trust_this` first. Pass its facts on, and do not call a file safe. Then `install_build` and give them the `blazium://install/<uid>` link. If it fails because the scan isn't clean, don't offer another way to download that file |
 | Join or leave a beta | `set_channel` (`beta` or `stable`), then `install_build` |
