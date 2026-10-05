@@ -1,20 +1,29 @@
 # Blazium Games skills
 
-Agent skills for [Blazium Games](https://blazium.games), the store operated by Divine Games, Inc. They cover store pages, deploys, crash reporting, analytics, keys, and playing or buying games.
+Agent skills for [Blazium Games](https://blazium.games), the store operated by Divine Games, Inc. They are not the engine skills at [`@blazium-engine/skills`](https://www.npmjs.com/package/@blazium-engine/skills), and they do not install Hub or the engine.
 
-This package is the store. It is not the engine skills at [`@blazium-engine/skills`](https://www.npmjs.com/package/@blazium-engine/skills), and it does not install Hub, the engine CLI, or the toolchain. A game on Blazium Games does not have to be made with the Blazium engine. The upload command is `chauffeur` from [`@blazium-games/cli`](https://www.npmjs.com/package/@blazium-games/cli).
+## Install
 
-The guide and the in-repo Cursor plugin source stay in [games_docs](https://github.com/blazium-games/games_docs). This repo is the versioned release. The skill index, with links into the guide, is [SKILL_TREE.md](SKILL_TREE.md).
+```bash
+npm install @blazium-games/skills
+```
 
-## Documentation
+Cursor: add `blazium-games/games_skill` from **Cursor Settings > Plugins**, then enable **Blazium Games**.
 
-Read these before guessing how the platform works:
+## Platform
 
-- [docs.blazium.games](https://docs.blazium.games)
-- Docs map: [llms.txt](https://docs.blazium.games/llms.txt)
-- Platform map: [blazium.games/llms.txt](https://blazium.games/llms.txt)
-- [Discovery files](https://docs.blazium.games/docs/discovery)
-- [Introduction](https://docs.blazium.games/docs/intro)
+- Docs: [docs.blazium.games](https://docs.blazium.games) and the map [llms.txt](https://docs.blazium.games/llms.txt)
+- Skills: `npm install @blazium-games/skills`, or Cursor Settings > Plugins > `blazium-games/games_skill`. Index: [SKILL_TREE.md](https://github.com/blazium-games/games_skill/blob/master/SKILL_TREE.md)
+- MCP: [developer server](https://docs.blazium.games/docs/mcp) at `https://mcp.blazium.games/mcp`, and [player server](https://docs.blazium.games/docs/mcp/player) at `https://mcp.blazium.games/player`
+- CLI: `npm install -g @blazium-games/cli` (`chauffeur`), guide at [docs.blazium.games/docs/cli](https://docs.blazium.games/docs/cli)
+- Launcher: Windows setup from [Releases](https://github.com/blazium-games/games_launcher/releases), guide at [desktop app](https://docs.blazium.games/docs/storefront/desktop-app)
+- Support: [blazium-games/support](https://github.com/blazium-games/support/issues). Status: [status.blazium.games](https://status.blazium.games)
+
+## This repo
+
+This package is the versioned release. The guide and the in-repo plugin source stay in [games_docs](https://github.com/blazium-games/games_docs). The skill index, with links into the guide, is [SKILL_TREE.md](SKILL_TREE.md). The catalog is [https://cdn.blazium.app/games-skills/skills.json](https://cdn.blazium.app/games-skills/skills.json).
+
+A game on Blazium Games does not have to be made with the Blazium engine. The upload command is `chauffeur` from [`@blazium-games/cli`](https://www.npmjs.com/package/@blazium-games/cli).
 
 | Skill | Guide |
 |-------|--------|
@@ -28,20 +37,6 @@ Read these before guessing how the platform works:
 | `blazium-games-player` | [Player MCP](https://docs.blazium.games/docs/mcp/player) |
 | `blazium-games-purchases` | [Agent purchases](https://docs.blazium.games/docs/payments/agent-purchases) |
 
-Support is [blazium.games/support](https://blazium.games/support). Status is [status.blazium.games](https://status.blazium.games). Platform bugs go to [blazium-games/support](https://github.com/blazium-games/support/issues).
-
-## Install
-
-```bash
-npm install @blazium-games/skills
-```
-
-Cursor: add `blazium-games/games_skill` from **Cursor Settings > Plugins**.
-
-The catalog is [https://cdn.blazium.app/games-skills/skills.json](https://cdn.blazium.app/games-skills/skills.json).
-
-## Plugins
-
 | Plugin | What it covers |
 |--------|----------------|
 | `blazium-games-developer` | Get started, store page, deploy, crash reporting, debug crash, analytics, keys |
@@ -50,9 +45,13 @@ The catalog is [https://cdn.blazium.app/games-skills/skills.json](https://cdn.bl
 
 `mcp.json` points at `https://mcp.blazium.games/mcp` and `https://mcp.blazium.games/player`. A token belongs to one server.
 
-## Hosts
-
 - Claude Code reads `.claude-plugin/marketplace.json`.
 - Cursor reads `.cursor-plugin/marketplace.json`.
 - Codex reads `.agents/plugins/marketplace.json`.
 - Grok reads the Claude marketplace and `./.grok/skills/`. See [GROK.md](GROK.md).
+
+Platform bugs go to [blazium-games/support](https://github.com/blazium-games/support/issues), not this repository's issue tracker.
+
+## License
+
+Licensed under the MIT License — see [LICENSE](LICENSE).
