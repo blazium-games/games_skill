@@ -6,6 +6,7 @@
     "name": "Blazium Games"
   },
   "homepage": "https://docs.blazium.games",
+  "repository": "https://github.com/blazium-games/games_skill",
   "license": "MIT",
   "keywords": [
     "blazium",

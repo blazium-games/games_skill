@@ -1,4 +1,18 @@
 {
+  "name": "blazium-games",
+  "version": "0.1.0",
+  "description": "Blazium Games developer and player skills, plus the developer and player MCP servers.",
+  "author": {
+    "name": "Blazium Games"
+  },
+  "homepage": "https://docs.blazium.games",
+  "repository": "https://github.com/blazium-games/games_skill",
+  "license": "MIT",
+  "keywords": [
+    "blazium",
+    "blazium-games",
+    "skills"
+  ],
   "interface": {
     "displayName": "Blazium Games",
     "shortDescription": "Blazium Games developer and player skills, plus the developer and player MCP servers.",
