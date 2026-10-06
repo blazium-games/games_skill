@@ -156,15 +156,15 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: claude
           path: dist/claude
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: cursor
           path: dist/cursor
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: codex
           path: dist/codex
