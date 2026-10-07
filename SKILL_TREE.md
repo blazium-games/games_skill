@@ -28,6 +28,9 @@ New to Blazium Games? Start with [blazium-games-get-started](skills/blazium-game
 | [blazium-games-debug-crash](skills/blazium-games-debug-crash/SKILL.md) | Triage crashes and map them to code | [Reading crashes](https://docs.blazium.games/docs/crash-reporting#reading-crashes) |
 | [blazium-games-analytics](skills/blazium-games-analytics/SKILL.md) | Summarize page traffic and downloads | [Download analytics](https://docs.blazium.games/docs/download-analytics), [MCP reference](https://docs.blazium.games/docs/mcp/reference) |
 | [blazium-games-keys](skills/blazium-games-keys/SKILL.md) | Inspect and rotate MCP and deploy keys | [Access and keys](https://docs.blazium.games/docs/mcp/access-and-keys), [Permissions](https://docs.blazium.games/docs/legal/permissions) |
+| [blazium-games-module](skills/blazium-games-module/SKILL.md) | Blazium engine login, lobby, and ICE | Engine module `games_module` |
+| [blazium-games-plugin](skills/blazium-games-plugin/SKILL.md) | Godot addon for other engines | Public `games_plugin` |
+| [blazium-games-lobby-pack](skills/blazium-games-lobby-pack/SKILL.md) | Publish a Luau lobby pack | `chauffeur lobby publish` |
 | [blazium-games-player](skills/blazium-games-player/SKILL.md) | Recommendations, catalog search, reviews, bug reports, friends, launcher links, game chat, and chat tokens for IRC clients | [Player MCP](https://docs.blazium.games/docs/mcp/player), [Game chat](https://docs.blazium.games/docs/storefront/chat), [Chat Rules](https://blazium.games/chat-rules) |
 | [blazium-games-purchases](skills/blazium-games-purchases/SKILL.md) | Buy, donate, and top up within a spending limit | [Agent purchases](https://docs.blazium.games/docs/payments/agent-purchases), [Top up](https://docs.blazium.games/docs/payments/top-up), [Buying](https://docs.blazium.games/docs/payments/buying) |
 

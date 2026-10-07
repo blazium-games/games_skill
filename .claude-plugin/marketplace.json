@@ -19,7 +19,10 @@
         "./skills/blazium-games-crash-reporting",
         "./skills/blazium-games-debug-crash",
         "./skills/blazium-games-analytics",
-        "./skills/blazium-games-keys"
+        "./skills/blazium-games-keys",
+        "./skills/blazium-games-module",
+        "./skills/blazium-games-plugin",
+        "./skills/blazium-games-lobby-pack"
       ]
     },
     {
@@ -46,6 +49,9 @@
         "./skills/blazium-games-debug-crash",
         "./skills/blazium-games-analytics",
         "./skills/blazium-games-keys",
+        "./skills/blazium-games-module",
+        "./skills/blazium-games-plugin",
+        "./skills/blazium-games-lobby-pack",
         "./skills/blazium-games-player",
         "./skills/blazium-games-purchases"
       ]
