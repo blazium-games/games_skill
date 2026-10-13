@@ -10,7 +10,9 @@ All tools call the Blazium Games API on behalf of the connected user. `uid` acce
 | `get_game` | `uid` | | One game's settings and store page fields |
 | `create_game` | `name` (required), `tagline`, `description`, `visibility`, `asset_type`, `vanity_name`, `adult`, `indexable`, `parent` | account, write | Create a store page. Tools, mods and plugins need a `parent` before they can go public. Needs developer mode on the account (`4105`) |
 | `update_game` | `uid` (required), `name`, `tagline`, `description`, `visibility`, `asset_type`, `adult`, `indexable`, `parent` | write | Update a store page; only passed fields change. An empty `parent` object clears it |
-| `get_game_analytics` | `uid` | | Visitor analytics: views, unique visitors, countries, actions |
+| `get_game_analytics` | `uid` | | Visitor analytics: views, unique visitors, countries, actions, downloads, and browser plays |
+| `get_web_player` | `uid` | | Browser player settings |
+| `set_web_player` | `uid` | `enabled`, `full_build_uid`, `demo_build_uid` | Choose the full build and an optional demo. Needs mcp:build.write |
 | `list_game_crashes` | `uid` | | Recent crash reports |
 | `get_crash` | `uid`, `crash_id` | | One crash with metadata, analysis, and stack availability |
 | `request_crash_download` | `uid`, `crash_id`, `kind` (`dump`, `log`, or `stack`; default `dump`) | | Private download URL valid for 1 hour |
