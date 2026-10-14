@@ -1,12 +1,12 @@
 ---
 name: blazium-games-get-started
-description: Connect Cursor to Blazium Games and route to the right skill. Blazium Games is the platform for playing and publishing games, applications, mods, and assets. The developer server (mcp.blazium.games/mcp) publishes pages, builds, crashes, analytics, and keys. The player server (mcp.blazium.games/player) finds, reviews, installs, and buys. Use when the user mentions Blazium Games for the first time, asks how to connect, or is unsure whether they want to play or publish.
+description: Connect Cursor to Blazium Games and route to the right skill. Blazium Games is a game publishing platform, with an infrastructure focus. The developer server (mcp.blazium.games/mcp) publishes pages, builds, crashes, analytics, and keys. The player server (mcp.blazium.games/player) finds, reviews, installs, and buys. Use when the user mentions Blazium Games for the first time, asks how to connect, or is unsure whether they want to play or publish.
 license: MIT
 ---
 
 # Blazium Games: Get Started
 
-Blazium Games is the platform for playing and publishing games, applications, mods, and assets. A token belongs to one server:
+Blazium Games is a game publishing platform, with an infrastructure focus. A token belongs to one server:
 
 - Developer server `https://mcp.blazium.games/mcp` (`blazium-games`, keys `bgames_mcp_`): pages, builds, crashes, analytics, and keys. Needs developer mode.
 - Player server `https://mcp.blazium.games/player` (`blazium-games-player`, keys `bgames_play_`): find, review, install, and buy. Works for every account.

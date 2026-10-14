@@ -2,7 +2,7 @@
 
 How Grok should load these skills. Same files as Claude, Cursor, and Codex. No invented marketplace schema.
 
-These skills are for the store at [blazium.games](https://blazium.games). They are not the Blazium engine skills.
+These skills are for the game publishing platform at [blazium.games](https://blazium.games). They are not the Blazium engine skills.
 
 Read [SKILL_TREE.md](SKILL_TREE.md) for which skill to use. The guide is [docs.blazium.games](https://docs.blazium.games), and the short map is [llms.txt](https://docs.blazium.games/llms.txt). Do not invent platform behavior that those pages do not describe.
 

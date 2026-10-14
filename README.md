@@ -1,6 +1,6 @@
 # Blazium Games skills
 
-Agent skills for [Blazium Games](https://blazium.games), the store operated by Divine Games, Inc. They are not the engine skills at [`@blazium-engine/skills`](https://www.npmjs.com/package/@blazium-engine/skills), and they do not install Hub or the engine.
+Agent skills for [Blazium Games](https://blazium.games), a game publishing platform, with an infrastructure focus, operated by Divine Games, Inc. They are not the engine skills at [`@blazium-engine/skills`](https://www.npmjs.com/package/@blazium-engine/skills), and they do not install Hub or the engine.
 
 ## Install
 
