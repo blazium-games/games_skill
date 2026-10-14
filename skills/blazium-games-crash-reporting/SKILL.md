@@ -98,16 +98,7 @@ Ask before adding them if the game has no privacy policy or the user needs playe
 
 ## 4. Custom events (optional)
 
-```http
-POST https://api.blazium.online/api/v1/public/events
-X-App-Id: <game uid>
-X-Build-Id: <build_id>
-Content-Type: application/json
-
-{ "events": [ { "event": "level_complete", "anonymous": true, "device_uid": "<random per install>" } ] }
-```
-
-Up to 100 events per request (more returns `4130`); the response is `202`. Use a random per-install id, not hardware identifiers.
+Register the name first with `set_funnels`. Then record it from the signed-in client, a game server key, or a scripted lobby. Unknown names are refused. See https://docs.blazium.games/docs/progress. The six standard events stay on the public route above.
 
 ## 5. Symbols
 

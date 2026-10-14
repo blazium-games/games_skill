@@ -21,7 +21,7 @@ Summarize store page traffic for one game.
 ## 1. Fetch
 
 1. Resolve the game with `list_games` if the user did not give a `uid`.
-2. Call `get_game_analytics` with `uid` (or read `blazium-games://games/{uid}/analytics`).
+2. Call `get_game_analytics` with `uid` and, when the user names a build, `build` (or read `blazium-games://games/{uid}/analytics`).
 
 ## 2. Interpret
 
@@ -37,6 +37,7 @@ Summarize store page traffic for one game.
 | `downloads.by_source[]` | `website`, `asset_library` (Godot or Blazium editor), `api`, `mcp_player`, `mcp_dev` |
 | `downloads.by_access[]` | `anonymous`, `owner`, `free`, `purchase`, `grant`, `key`, `bundle` |
 | `downloads.by_outcome[]` | Every attempt, including refusals such as `sign_in_required` and `payment_required` |
+| `events[]` | Registered funnel events: `name`, `count`, `unique_devices`, and `daily`. This is not visitor or download analytics |
 
 Analytics are aggregate. Individual visitors are not identifiable through the MCP.
 
