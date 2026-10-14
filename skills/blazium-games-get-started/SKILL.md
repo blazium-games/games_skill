@@ -84,7 +84,7 @@ If OAuth is not possible (headless CI, remote agents), use an API key instead. S
 | Add crash reporting to a game | `blazium-games-crash-reporting` |
 | Investigate a crash | `blazium-games-debug-crash` |
 | Read visitor analytics | `blazium-games-analytics` |
-| Set achievements, stats, funnels, or presence writers | `get_achievements`, `set_achievements`, `get_stats`, `set_stats`, `get_funnels`, `set_funnels`, `get_presence_writers`, `set_presence_writers` ([tools](./references/tools.md)). A game reads unlocks and stats with `progress()` and sets a client status with `set_presence` when `client` is a writer. |
+| Set achievements, stats, funnels, or presence writers | `get_achievements`, `set_achievements`, `get_stats`, `set_stats`, `get_funnels`, `set_funnels`, `get_presence_writers`, `set_presence_writers` ([tools](./references/tools.md)). A game reads unlocks and stats with `progress()` and sets a client status with `set_presence` when `client` is a writer. A game or private server key reads one owner with `GET /api/v1/server/progress?user_uid=`. |
 | Rotate MCP or deploy keys | `blazium-games-keys` |
 | Moderate a game's chat channel (guests, bans, mutes) | `get_game_chat`, then `set_chat_guests`, `ban_chat_user`, or `suspend_chat_user` only when the human asks ([tools](./references/tools.md)) |
 | Find, review, or play games as a player, or get a chat token | `blazium-games-player` |
