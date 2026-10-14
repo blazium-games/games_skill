@@ -30,7 +30,7 @@ Create and edit the public page at `https://<username>.blazium.games/<vanity_nam
    - `description`: markdown, two short paragraphs, facts only. Its first plain line is the share description when there is no tagline
 3. Confirm the copy with the user.
 
-If the game is already on Steam, the user can copy its store page instead at https://blazium.games/import/steam. That needs their Steamworks Web API key, so it is website-only: never ask for the key or accept it in chat. See https://docs.blazium.games/docs/steam-import
+If the game is already on Steam, the user can copy its store page instead at https://blazium.games/import/steam. That needs their Steamworks Web API key, so it is website-only: never ask for the key or accept it in chat. See https://docs.blazium.games/docs/steam-import. Achievements and integer stats can be pulled from Steam once Steam auth verification is on; push and two-way sync are not available, because Steam publishes those definitions only on the Steamworks site.
 
 ## 2. Create
 
