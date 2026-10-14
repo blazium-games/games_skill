@@ -23,7 +23,7 @@ All tools call the Blazium Games API on behalf of the connected user. `uid` acce
 | `request_server_key` | `uid`, `role` | | Returns a game_server or private_server secret once |
 | `revoke_server_key` | `uid`, `key_id` | | Revokes one game server key |
 | `get_web_player` | `uid` | | Browser player settings, including the Discord application id and public key |
-| `set_web_player` | `uid` | `enabled`, `full_build_id`, `demo_build_id`, `application_id`, `public_key` | Choose the full build, an optional demo, and Discord activity hosting. Needs mcp:build.write |
+| `set_web_player` | `uid` | `enabled`, `full_build_id`, `demo_build_id`, `discord_enabled`, `application_id`, `public_key` | Choose the full build, an optional demo, and Discord activity hosting. Hosting stays off unless `discord_enabled` is set, and it still requires the player to be on plus both values. Needs mcp:build.write |
 | `list_game_crashes` | `uid` | | Recent crash reports |
 | `get_crash` | `uid`, `crash_id` | | One crash with metadata, analysis, and stack availability |
 | `request_crash_download` | `uid`, `crash_id`, `kind` (`dump`, `log`, or `stack`; default `dump`) | | Private download URL valid for 1 hour |
