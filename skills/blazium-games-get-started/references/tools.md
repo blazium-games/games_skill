@@ -10,7 +10,18 @@ All tools call the Blazium Games API on behalf of the connected user. `uid` acce
 | `get_game` | `uid` | | One game's settings and store page fields |
 | `create_game` | `name` (required), `tagline`, `description`, `visibility`, `asset_type`, `vanity_name`, `adult`, `indexable`, `parent` | account, write | Create a store page. Tools, mods and plugins need a `parent` before they can go public. Needs developer mode on the account (`4105`) |
 | `update_game` | `uid` (required), `name`, `tagline`, `description`, `visibility`, `asset_type`, `adult`, `indexable`, `parent` | write | Update a store page; only passed fields change. An empty `parent` object clears it |
-| `get_game_analytics` | `uid` | | Visitor analytics: views, unique visitors, countries, actions, downloads, and browser plays |
+| `get_game_analytics` | `uid`, optional `build` | | Visitor analytics plus registered funnel events: count, unique devices, and a daily series |
+| `get_achievements` | `uid` | | Achievement definitions and writers |
+| `set_achievements` | `uid`, `achievements` | mcp:catalog.write | Replaces the achievement list |
+| `get_stats` | `uid` | | Integer stats, op, and writers |
+| `set_stats` | `uid`, `stats` | mcp:catalog.write | Replaces the stat list |
+| `get_funnels` | `uid` | | Registered analytics events and writers |
+| `set_funnels` | `uid`, `funnels` | mcp:catalog.write | Replaces the funnel list |
+| `get_presence_writers` | `uid` | | Who may set the short presence status |
+| `set_presence_writers` | `uid`, `writers` | mcp:catalog.write | Replaces that list |
+| `list_server_keys` | `uid` | | Game server key prefixes and roles. No secrets |
+| `request_server_key` | `uid`, `role` | | Returns a game_server or private_server secret once |
+| `revoke_server_key` | `uid`, `key_id` | | Revokes one game server key |
 | `get_web_player` | `uid` | | Browser player settings |
 | `set_web_player` | `uid` | `enabled`, `full_build_id`, `demo_build_id` | Choose the full build and an optional demo. Needs mcp:build.write |
 | `list_game_crashes` | `uid` | | Recent crash reports |
