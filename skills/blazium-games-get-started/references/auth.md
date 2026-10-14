@@ -6,7 +6,7 @@ The server at `https://mcp.blazium.games/mcp` accepts OAuth 2.1 access tokens or
 
 - Discovery: `https://mcp.blazium.games/.well-known/oauth-protected-resource/mcp` and `/.well-known/oauth-authorization-server` (player server: the same paths ending in `/player`)
 - PKCE `S256` (verifier 43-128 characters), dynamic client registration, and client ID metadata documents are supported
-- Scopes: `mcp:read`, `mcp:write`, and the narrower `mcp:catalog.write`, `mcp:build.write`, `mcp:crash.read`, `mcp:analytics.read`, `mcp:keys.manage`, `mcp:money`
+- Scopes: `mcp:read`, `mcp:write`, and the narrower `mcp:catalog.write`, `mcp:build.write`, `mcp:crash.read`, `mcp:crash.write`, `mcp:analytics.read`, `mcp:bugs.read`, `mcp:bugs.write`, `mcp:steam.manage`, `mcp:keys.manage`, `mcp:money`, `mcp:anticheat`
 - Access tokens last 1 hour. Refresh tokens rotate on every use, so the client renews silently, but the sign-in still ends 30 days after it started
 - Each refresh token works once. Reusing a spent one revokes the whole sign-in; the user then reconnects
 - Details: https://docs.blazium.games/docs/mcp/oauth
@@ -17,7 +17,7 @@ On the consent page the user picks:
 |--------|--------|
 | Account | All games the user owns or admins, plus account tools |
 | Single project | Only that game. Account tools (`get_profile`, `get_setup`, `list_mcp_keys`, `request_mcp_key`, `create_game`, `get_account`, approvals, payments, `blazium-games://me`) and other games return `403` code `4030` |
-| Preset | **Store page**, **CI**, **Crash triage**, **Keys**, **Money**, or **Full access**. A tool outside the preset returns `4073` |
+| Preset | **Store page**, **CI**, **Crash triage**, **Keys**, **Money**, **Anticheat**, or **Full access**. A tool outside the preset returns `4073`. **Full access** does not include anticheat. **Anticheat** grants only `mcp:anticheat` |
 | Read-only access | Only `mcp:read` is granted. Any write returns `403` code `4031` "This token is read-only" |
 
 Revoke grants at https://blazium.games/settings/mcp.

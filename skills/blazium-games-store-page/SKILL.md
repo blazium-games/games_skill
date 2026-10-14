@@ -30,6 +30,8 @@ Create and edit the public page at `https://<username>.blazium.games/<vanity_nam
    - `description`: markdown, two short paragraphs, facts only. Its first plain line is the share description when there is no tagline
 3. Confirm the copy with the user.
 
+If the game is already on Steam, the user can copy its store page instead at https://blazium.games/import/steam. That needs their Steamworks Web API key, so it is website-only: never ask for the key or accept it in chat. See https://docs.blazium.games/docs/steam-import
+
 ## 2. Create
 
 Call `create_game`:
@@ -93,6 +95,7 @@ Videos and changelogs are managed on the website or through builds (`blazium-gam
 - https://docs.blazium.games/docs/listings
 - https://docs.blazium.games/docs/content-rules
 - https://docs.blazium.games/docs/press-kit
+- https://docs.blazium.games/docs/steam-import
 - https://docs.blazium.games/docs/seo-and-indexing
 - https://docs.blazium.games/docs/developer-mode
 - https://docs.blazium.games/docs/mcp/reference
