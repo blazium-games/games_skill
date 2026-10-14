@@ -50,7 +50,7 @@ Tell the user to store them as CI secrets (for example GitHub Actions secrets `B
 chauffeur reads `BLAZIUM_ACCESS_TOKEN` and `BLAZIUM_SECRET_KEY` from the environment (or `--access` and `--secret-stdin`). `chauffeur info` confirms which game the key belongs to.
 
 1. Generate `build.yml` once: `chauffeur genbuild --version 1.0.0`
-2. Optionally add changelog entries: `chauffeur addchangelog --title "..." --description "..."`
+2. Optionally add changelog entries: `chauffeur addchangelog --title "..." --description "..."`. A new or changed changelog on a stable build emails the owner and accepted admins. The store page shows it, and a game pulls it from `GET /api/v1/games/{game_uid}/patch/notices` until the player acknowledges it.
 3. Register the build: `chauffeur build --asset build.yml --os windows --arch x86_64`. It prints `BLAZIUM_GAMES_APP_ID` and `BLAZIUM_GAMES_BUILD_ID`
 4. Generate `addfiles.yml`: `chauffeur setfiles --version 1.0.0 --os windows --arch x86_64 --files ./export/windows`
 5. Upload the files, and symbols if the user has them: `chauffeur addfiles --asset addfiles.yml --symbols ./symbols`
