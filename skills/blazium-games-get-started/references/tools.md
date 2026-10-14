@@ -8,6 +8,8 @@ All tools call the Blazium Games API on behalf of the connected user. `uid` acce
 | `get_setup` | none | account | Account, games, public URLs, and key prefixes. No secrets |
 | `list_games` | none | | Games the user owns or admins, plus pending admin invites |
 | `get_game` | `uid` | | One game's settings and store page fields |
+| `get_lobby` | `uid` | | Lobby settings and published packs: enabled, relay or scripted, TURN, the active checksum, and pack history |
+| `set_lobby` | `uid` (required), `enabled`, `lobby_type` (`relay` or `scripted`), `ice_enabled` | write | Only the fields you pass change |
 | `create_game` | `name` (required), `tagline`, `description`, `visibility`, `asset_type`, `vanity_name`, `adult`, `indexable`, `parent` | account, write | Create a store page. Tools, mods and plugins need a `parent` before they can go public. Needs developer mode on the account (`4105`) |
 | `update_game` | `uid` (required), `name`, `tagline`, `description`, `visibility`, `asset_type`, `adult`, `indexable`, `parent` | write | Update a store page; only passed fields change. An empty `parent` object clears it |
 | `get_game_analytics` | `uid`, optional `build` | | Visitor analytics plus registered funnel events: count, unique devices, and a daily series |
@@ -23,7 +25,7 @@ All tools call the Blazium Games API on behalf of the connected user. `uid` acce
 | `request_server_key` | `uid`, `role` | | Returns a game_server or private_server secret once |
 | `revoke_server_key` | `uid`, `key_id` | | Revokes one game server key |
 | `get_web_player` | `uid` | | Browser player settings, including the Discord application id and public key |
-| `set_web_player` | `uid` | `enabled`, `full_build_id`, `demo_build_id`, `discord_enabled`, `application_id`, `public_key` | Choose the full build, an optional demo, and Discord activity hosting. Hosting stays off unless `discord_enabled` is set, and it still requires the player to be on plus both values. Needs mcp:build.write |
+| `set_web_player` | `uid` | `enabled`, `full_build_id`, `demo_build_id`, `width`, `height`, `fullscreen`, `mobile`, `click_to_play`, `embed_enabled`, `embed_domains`, `discord_enabled`, `application_id`, `public_key` | Choose the full build, an optional demo, the player size and embed settings, and Discord activity hosting. Hosting stays off unless `discord_enabled` is set, and it still requires the player to be on plus both values. Needs mcp:build.write |
 | `list_game_crashes` | `uid` | | Recent crash reports |
 | `get_crash` | `uid`, `crash_id` | | One crash with metadata, analysis, and stack availability |
 | `request_crash_download` | `uid`, `crash_id`, `kind` (`dump`, `log`, or `stack`; default `dump`) | | Private download URL valid for 1 hour |
@@ -37,11 +39,18 @@ All tools call the Blazium Games API on behalf of the connected user. `uid` acce
 | `promote_build` | `uid`, `channel`, `build_id`, `expires_in_hours`, `idempotency_key` | write | Point a channel at a clean build. `stable` waits for the human's approval |
 | `rollback_channel` | `uid`, `channel` | write | Move a channel back to its previous build |
 | `list_crash_groups` | `uid` | | Up to 100 crash groups by cause, most recently seen first, with counts per build and a sample crash id |
+| `get_crash_reporter` / `set_crash_reporter` | `uid`, and for set: `enabled`, `webhooks`, `refresh_signing_key` | `mcp:crash.read` / `mcp:crash.write` | Per-game crash webhooks. The signing key is not the bug reporter key |
 | `get_build_provenance` | `uid`, `file_uid` | | Uploader, deploy key reference, upload time, checksum, and scan history of a file |
 | `list_reviews` | `uid`, `unreplied`, `page` | | Player reviews with the summary (enjoyed, quality average and counts, would play with friends) |
 | `reply_to_review` | `uid`, `review_uid`, `text` | write | Public reply to a review; empty text removes it |
 | `list_bug_tickets` | `uid`, `status` | | Player bug tickets with counts by status; attachments carry a `crash_id` |
-| `update_bug_ticket` | `uid`, `bug_uid`, `status` (`open`, `fixed`, `closed`) | write | Mark a ticket fixed or closed, or reopen it; covered by `mcp:crash.read` |
+| `update_bug_ticket` | `uid`, `bug_uid`, `status` (`open`, `fixed`, `closed`) | `mcp:bugs.write` | Mark a ticket fixed or closed, or reopen it |
+| `get_bug_reporter` / `set_bug_reporter` | `uid`, and for set: `enabled`, `daily_cap`, `webhooks`, `refresh_signing_key` | `mcp:bugs.read` / `mcp:bugs.write` | Per-game in-game reporter. The signing key is unique to the game |
+| `get_review_reporter` | `uid` | `mcp:read` | New-review webhooks: enabled, webhook URLs, and that game's signing key. The key is not the sale, crash, or bug reporter key |
+| `set_review_reporter` | `uid`, optional `enabled`, `webhooks`, `refresh_signing_key` | `mcp:catalog.write` | Turns new-review webhooks on, replaces up to five https URLs, or refreshes the signing key. An edit or a delete does not send |
+| `get_sale_reporter` | `uid` | `mcp:money` | Sale and refund webhooks: enabled, webhook URLs, and that game's signing key. The key is not the review, crash, or bug reporter key |
+| `set_sale_reporter` | `uid`, optional `enabled`, `webhooks`, `refresh_signing_key` | `mcp:money` | Turns sale and refund webhooks on, replaces up to five https URLs, or refreshes the signing key |
+| `get_steam_auth` / `set_steam_auth` | `uid`, and for set: `app_id`, `web_api_key`, `ticket_secret`, `enabled`, `confirm` | `mcp:steam.manage` | Write-only Web API key and ticket secret. Disable deletes both only when `confirm` is true |
 | `list_copyright_notices` | none | | Paid copyright (DMCA) notices about the account's content, with status and how many of its links each names |
 | `get_copyright_notice` | `uid` | | One notice: claimant, work, statements, the account's named links, staff messages, decision, and `reply_to`. Read only; the human replies by email with the reference in the subject |
 | `get_game_chat` | `uid` | | The game's IRC channel (`irc_channel`), whether guests may join (`chat_guests`), and who is banned or muted with when each mute ends |
@@ -177,3 +186,28 @@ Tool errors come back as `API <status>: <body>`. Common bodies:
 | `4234` | Invalid mod settings |
 | `4235` | Invalid press kit |
 | `4238` | Invalid store link: wrong site, not https, or a store listed twice |
+
+## Anticheat
+
+These tools need `mcp:anticheat`. `mcp:read`, `mcp:write`, and **Full access** do not include them. They are not on the player server. Reports, keys, and settings stay closed until staff record a signed NDA and a signed contract for that game. `request_anticheat` is the exception: the owner uses it to start that request. Do not describe how a check decides. Profiles are `generic`, `platformer`, and `fps`. Public description: [Anticheat](https://docs.blazium.games/docs/anticheat).
+
+| Tool | Inputs | Access | What it does |
+|------|--------|--------|--------------|
+| `request_anticheat` | `uid`, contact email, `confirm` | `mcp:anticheat` | Owner only. `confirm` must be true. Staff write to that email |
+| `get_anticheat` | `uid` | `mcp:anticheat` | Request status, then the profile and its settings after access is granted |
+| `update_anticheat` | `uid`, `profile`, settings for that profile | `mcp:anticheat` | Rejects a setting from the other profile. Shutting admins out is owner-only |
+| `list_anticheat_keys` | `uid` | `mcp:anticheat` | Names and prefixes. Never the secret |
+| `create_anticheat_key` | `uid`, name, `confirm` | `mcp:anticheat` | `confirm` must be true. Secret once, for the dedicated server only |
+| `rotate_anticheat_key` | `uid`, key id, `confirm` | `mcp:anticheat` | `confirm` must be true. New secret once |
+| `revoke_anticheat_key` | `uid`, key id, `confirm` | `mcp:anticheat` | `confirm` must be true |
+| `list_anticheat_events` | `uid`, optional origin | `mcp:anticheat` | Reports. Origin is the client or a server key's name |
+| `list_anticheat_bans` | `uid` | `mcp:anticheat` | Bans for that game |
+| `ban_anticheat_player` | `uid`, player | `mcp:anticheat` | Ban a player on that game |
+| `unban_anticheat_player` | `uid`, player | `mcp:anticheat` | Lift that ban |
+| `list_anticheat_mutes` | `uid` | `mcp:anticheat` | Mutes for that game |
+| `mute_anticheat_player` | `uid`, player | `mcp:anticheat` | Mute a player on that game |
+| `unmute_anticheat_player` | `uid`, player | `mcp:anticheat` | Lift that mute |
+| `list_anticheat_notes` | `uid` | `mcp:anticheat` | Notes the game's developers kept |
+| `add_anticheat_note` | `uid`, note | `mcp:anticheat` | Add a note |
+| `enqueue_anticheat_action` | `uid`, action, player id, `confirm` | `mcp:anticheat` | `confirm` must be true. Warn, mute, kick, ban, or a screenshot |
+| `list_anticheat_audit` | `uid` | `mcp:anticheat` | Who changed settings, keys, or actions |

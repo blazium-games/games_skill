@@ -47,7 +47,7 @@ Server: `https://mcp.blazium.games/player`. Scopes: `player:read`, `player:write
 | `send_friend_request` | write | Send a request by username (20 per day, verified email). Accepts theirs if they already asked |
 | `respond_friend_request` | write | Accept or decline an incoming request |
 | `redeem_key` | write | Redeem a game key or gift link the human gave you; a game they already own leaves the key unused |
-| `get_chat_connection` | write | Sign in to game chat yourself: host, TLS port 6697, the browser websocket, and a SASL PLAIN token that works for 10 minutes. Then `GAMEJOIN <game uid>`. Chat follows https://blazium.games/chat-rules |
+| `get_chat_connection` | write | Sign in to game chat yourself: host, TLS port 6697, the browser websocket, and a SASL PLAIN token that works for 10 minutes. Then `GAMEJOIN <game uid>`, or `LFGSUB <game uid>` to read without talking. Commands and replies: https://docs.blazium.games/docs/chat/commands. Chat follows https://blazium.games/chat-rules |
 | `get_chat_token_status` | read | Whether the human has a chat token for IRC clients (prefix and times, never the token), whether the account is locked out of chat, and the client settings |
 | `request_chat_token` | write | Only when the human asks, with `confirm: true`: creates or replaces their IRC client chat token. It comes back once; hand it straight to the human. Replacing it disconnects clients using the old one. Up to 10 changes an hour (`4290`) |
 | `revoke_chat_token` | write | Only when the human asks, with `confirm: true`: revokes the chat token and disconnects clients using it |
