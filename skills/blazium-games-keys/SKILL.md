@@ -72,6 +72,10 @@ Redeemable game keys are not credentials; they give players a copy of the game. 
 
 If the user approved the connection with **Read-only access**, the token only has `mcp:read`. Rotation tools then fail with HTTP 403, code 4031 ("This token is read-only"). Ask the user to reconnect without the read-only option, or to rotate on the website. A token from a narrower preset without `mcp:keys.manage` gets `4073`; reconnect with the **Keys** or **Full access** preset.
 
+## Mint keys
+
+A mint key is a 128-character secret for one game. `request_mint_key` returns it once. It can mint items and, for a named player, set stats, socket, unsocket, and use. It cannot edit the catalog, turn Steam on, or sell. Players and the game client cannot do those actions. `mcp:keys.manage` covers mint keys. `mcp:catalog.write` does not.
+
 ## Docs
 
 - https://docs.blazium.games/docs/mcp/access-and-keys
