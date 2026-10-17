@@ -1,6 +1,6 @@
 # Authentication
 
-The server at `https://mcp.blazium.games/mcp` accepts OAuth 2.1 access tokens or MCP API keys, both sent as `Authorization: Bearer <token>`.
+The server at `https://mcp.blazium.games/developer` accepts OAuth 2.1 access tokens or MCP API keys, both sent as `Authorization: Bearer <token>`. `https://mcp.blazium.games/mcp` still reaches this server.
 
 ## OAuth (recommended)
 
@@ -34,7 +34,7 @@ For headless agents and CI:
   "mcpServers": {
     "blazium-games": {
       "type": "http",
-      "url": "https://mcp.blazium.games/mcp",
+      "url": "https://mcp.blazium.games/developer",
       "headers": { "Authorization": "Bearer bgames_mcp_YOUR_KEY" }
     }
   }

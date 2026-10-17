@@ -1,6 +1,6 @@
 ---
 name: blazium-games-get-started
-description: Connect Cursor to Blazium Games and route to the right skill. Blazium Games is a game publishing platform, with an infrastructure focus. The developer server (mcp.blazium.games/mcp) publishes pages, builds, crashes, analytics, and keys. The player server (mcp.blazium.games/player) finds, reviews, installs, and buys. Use when the user mentions Blazium Games for the first time, asks how to connect, or is unsure whether they want to play or publish.
+description: Connect Cursor to Blazium Games and route to the right skill. Blazium Games is a game publishing platform, with an infrastructure focus. The developer server (mcp.blazium.games/developer) publishes pages, builds, crashes, analytics, and keys. The player server (mcp.blazium.games/player) finds, reviews, installs, and buys. Use when the user mentions Blazium Games for the first time, asks how to connect, or is unsure whether they want to play or publish.
 license: MIT
 ---
 
@@ -8,7 +8,7 @@ license: MIT
 
 Blazium Games is a game publishing platform, with an infrastructure focus. A token belongs to one server:
 
-- Developer server `https://mcp.blazium.games/mcp` (`blazium-games`, keys `bgames_mcp_`): pages, builds, crashes, analytics, and keys. Needs developer mode.
+- Developer server `https://mcp.blazium.games/developer` (`/mcp` still reaches it; `blazium-games`, keys `bgames_mcp_`): pages, builds, crashes, analytics, and keys. Needs developer mode.
 - Player server `https://mcp.blazium.games/player` (`blazium-games-player`, keys `bgames_play_`): find, review, install, and buy. Works for every account.
 
 Never send a player token to the developer server, or a developer token to the player server. Verify the account, then hand off to the skill that matches the user's goal.
@@ -32,7 +32,7 @@ Use these instead of browsing the website. Signed-in pages do not have facts the
 
 ## Prerequisites
 
-- A Blazium Games account (sign up at https://blazium.games/signup)
+- A Blazium Games account. Sign up at https://blazium.games/signup, or call `create_account` on the server you are connected to and `confirm_account` with the email code. The developer server turns developer mode on. The player server leaves the account a player.
 - The `blazium-games` MCP server enabled in Cursor (this plugin ships it in `mcp.json`)
 
 ## 1. Connect
@@ -44,7 +44,7 @@ The plugin registers the server as:
   "mcpServers": {
     "blazium-games": {
       "type": "http",
-      "url": "https://mcp.blazium.games/mcp"
+      "url": "https://mcp.blazium.games/developer"
     }
   }
 }

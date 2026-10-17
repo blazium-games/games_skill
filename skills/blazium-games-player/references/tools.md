@@ -7,6 +7,8 @@ Server: `https://mcp.blazium.games/player`. Scopes: `player:read`, `player:write
 | Tool | Scope | Purpose |
 |------|-------|---------|
 | `get_account` | read | Email verification, timezone, balances, what the account may do, and open website sign-in steps (`gate`, `legal_acceptance_required`, `setup_required`, `authenticator`) |
+| `create_account` | none | Creates an account. No bearer. Send `accept_legal` only after the person agrees. The account stays a player |
+| `confirm_account` | none | Finishes signup with the email code and returns the first `bgames_play_` key once. No bearer |
 | `request_email_code` | write | Email a verification code to the human |
 | `verify_email` | write | Verify the email with the human's code |
 | `set_timezone` | write | Replace the saved timezone with the human's IANA name, when `get_account` timezone is empty or the human asks. Do not use the agent's machine timezone. Unknown names: `4085` |
@@ -44,6 +46,13 @@ Server: `https://mcp.blazium.games/player`. Scopes: `player:read`, `player:write
 | `report_bug` | write | File a bug ticket with the developers (10 per day); `include_dump` / `include_log` return one-time upload URLs |
 | `games_friends_play` | read | What friends are playing now, then what they played in the last 14 days; `live_only` skips the recent list |
 | `list_friends` | read | Friends with presence, plus incoming and sent requests with their `request_uid` |
+| `remove_friend` | write | Removes a friend by username |
+| `get_presence` | read | What you are playing, and whether that is shared |
+| `set_presence_sharing` | write | `share` true shows friends what you are playing |
+| `get_inventory` | read | Items you hold. Page with `cursor` |
+| `list_listings` | read | Your marketplace listings |
+| `create_listing` | write | Lists items for sale: `uid`, `price_cents`, and `item_ids` or `itemdef_id` with `count` |
+| `cancel_listing` | write | Cancels a listing by `listing_id` |
 | `send_friend_request` | write | Send a request by username (20 per day, verified email). Accepts theirs if they already asked |
 | `respond_friend_request` | write | Accept or decline an incoming request |
 | `redeem_key` | write | Redeem a game key or gift link the human gave you; a game they already own leaves the key unused |

@@ -14,7 +14,7 @@ Cursor: add `blazium-games/games_skill` from **Cursor Settings > Plugins**, then
 
 - Docs: [docs.blazium.games](https://docs.blazium.games) and the map [llms.txt](https://docs.blazium.games/llms.txt)
 - Skills: `npm install @blazium-games/skills`, or Cursor Settings > Plugins > `blazium-games/games_skill`. Index: [SKILL_TREE.md](https://github.com/blazium-games/games_skill/blob/master/SKILL_TREE.md)
-- MCP: [developer server](https://docs.blazium.games/docs/mcp) at `https://mcp.blazium.games/mcp`, and [player server](https://docs.blazium.games/docs/mcp/player) at `https://mcp.blazium.games/player`
+- MCP: [developer server](https://docs.blazium.games/docs/mcp) at `https://mcp.blazium.games/developer` (`/mcp` still reaches it), and [player server](https://docs.blazium.games/docs/mcp/player) at `https://mcp.blazium.games/player`
 - CLI: `npm install -g @blazium-games/cli` (`chauffeur`), guide at [docs.blazium.games/docs/cli](https://docs.blazium.games/docs/cli)
 - Launcher: BlaziumLauncher at `{autopf}\Blazium\Games` on Windows. Shared tools are in `{autopf}\Blazium`. Setup from [Releases](https://github.com/blazium-games/games_launcher/releases), guide at [desktop app](https://docs.blazium.games/docs/storefront/desktop-app)
 - Support: [blazium-games/support](https://github.com/blazium-games/support/issues). Status: [status.blazium.games](https://status.blazium.games)
@@ -46,7 +46,7 @@ A game on Blazium Games does not have to be made with the Blazium engine. The up
 | `blazium-games-player` | Get started, player, purchases |
 | `blazium-games` | Every skill, plus `mcp.json` |
 
-`mcp.json` points at `https://mcp.blazium.games/mcp` and `https://mcp.blazium.games/player`. A token belongs to one server.
+`mcp.json` points at `https://mcp.blazium.games/developer` and `https://mcp.blazium.games/player`. `https://mcp.blazium.games/mcp` still reaches the developer server. A token belongs to one server.
 
 - Claude Code reads `.claude-plugin/marketplace.json`.
 - Cursor reads `.cursor-plugin/marketplace.json`.
