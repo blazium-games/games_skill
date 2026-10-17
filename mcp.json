@@ -2,7 +2,7 @@
   "mcpServers": {
     "blazium-games": {
       "type": "http",
-      "url": "https://mcp.blazium.games/mcp"
+      "url": "https://mcp.blazium.games/developer"
     },
     "blazium-games-player": {
       "type": "http",
