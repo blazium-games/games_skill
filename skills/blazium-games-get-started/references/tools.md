@@ -31,6 +31,11 @@ All tools call the Blazium Games API on behalf of the connected user. `uid` acce
 | `request_crash_download` | `uid`, `crash_id`, `kind` (`dump`, `log`, or `stack`; default `dump`) | | Private download URL valid for 1 hour |
 | `get_deploy_info` | `uid` | | Upload, crash, and events URLs, recent builds, env var names, deploy key prefixes. No secrets |
 | `list_game_builds` | `uid` | | Up to 50 builds. Each `build_id` is the `X-Build-Id` for crash reporters |
+| `delete_game_build` | `uid`, `build_id` | write | Deletes one build after the owner approves |
+| `add_game_admin` | `uid`, `invite` | write | Invites an admin. Owner only, and the owner approves |
+| `remove_game_admin` | `uid`, `admin_id` | write | Removes an admin. Owner only |
+| `delete_game` | `uid` | write | Deletes a game the caller owns, after the owner approves |
+| `get_account_analytics` | none | account | Analytics across the account's games |
 | `get_game_build` | `uid`, `build_id` | | One build with its files and crash reporter headers |
 | `list_mcp_keys` | none | account | MCP API key prefixes. Secrets are never returned |
 | `request_mcp_key` | `idempotency_key` | account, write | Issue a new MCP API key and invalidate every previous one. Waits for the human's approval, then returns the secret once |
@@ -51,6 +56,12 @@ All tools call the Blazium Games API on behalf of the connected user. `uid` acce
 | `get_sale_reporter` | `uid` | `mcp:money` | Sale and refund webhooks: enabled, webhook URLs, and that game's signing key. The key is not the review, crash, or bug reporter key |
 | `set_sale_reporter` | `uid`, optional `enabled`, `webhooks`, `refresh_signing_key` | `mcp:money` | Turns sale and refund webhooks on, replaces up to five https URLs, or refreshes the signing key |
 | `get_steam_auth` / `set_steam_auth` | `uid`, and for set: `app_id`, `web_api_key`, `ticket_secret`, `enabled`, `confirm` | `mcp:steam.manage` | Write-only Web API key and ticket secret. Disable deletes both only when `confirm` is true |
+| `unlink_steam` | `uid`, `confirm` | `mcp:steam.manage` | Unlinks Steam. `confirm` only after the human agrees |
+| `rotate_steam_key` | `uid`, `confirm` | `mcp:steam.manage` | Replaces the Web API key. The new key is returned once |
+| `resync_steam` | `uid`, `confirm`, optional `groups`, `web_api_key` | `mcp:steam.manage` | Imports the chosen groups again |
+| `import_steam_game` | `app_id`, `web_api_key`, `confirm`, optional `groups`, `uid` | developer | Imports a Steam page. `confirm` only after the human agrees |
+| `set_anonymous_downloads` | `uid`, `enabled`, `confirm_no_license` | write | Anonymous downloads. Turning them on needs the human's confirm, and a free game |
+| `set_adult_content` | `show`, `confirm_18` | account, write | Adult listings. Turning them on needs the human to confirm they are 18 or older |
 | `list_copyright_notices` | none | | Paid copyright (DMCA) notices about the account's content, with status and how many of its links each names |
 | `get_copyright_notice` | `uid` | | One notice: claimant, work, statements, the account's named links, staff messages, decision, and `reply_to`. Read only; the human replies by email with the reference in the subject |
 | `get_game_chat` | `uid` | | The game's IRC channel (`irc_channel`), whether guests may join (`chat_guests`), and who is banned or muted with when each mute ends |
@@ -109,6 +120,9 @@ Amounts are integer US cents. Agents pay only from the stored balance, and only 
 | Tool | Inputs | Access | What it does |
 |------|--------|--------|--------------|
 | `get_account` | none | account | Email verification, timezone, balances, what the account may do (publish, upload, download, buy), and open website sign-in steps (`gate`, `legal_acceptance_required`, `legal_changes`, `setup_required`, `authenticator`) |
+| `create_account` | `email`, `password`, optional `username`, `accept_legal`, `accept_developer_terms` | none | Creates an account. No bearer. On this server, `accept_legal` and `accept_developer_terms` (only after the human agrees) turn developer mode on |
+| `confirm_account` | `email`, `code` | none | Finishes signup with the email code and returns the first `bgames_mcp_` key once. No bearer |
+| `enable_developer_mode` | `accept_terms` | account, write | Turns developer mode on after the human agrees. Turning it off stays on the website |
 | `request_email_code` | none | account, write | Email a verification code to the human |
 | `verify_email` | `code` | account, write | Verify the email with the code the human read from their inbox |
 | `set_timezone` | `timezone` | account, write | Replace the saved timezone with the human's IANA name, when it is empty or the human asks. Do not send the timezone of the machine running the agent. Unknown names: `4085` |
