@@ -32,7 +32,7 @@ Use these instead of browsing the website. Signed-in pages do not have facts the
 
 ## Prerequisites
 
-- A Blazium Games account. Sign up at https://blazium.games/signup, or call `create_account` on the server you are connected to and `confirm_account` with the email code. The developer server turns developer mode on. The player server leaves the account a player.
+- A Blazium Games account. Sign up at https://blazium.games/signup, or call `initialize` with no token and follow `setup_account` or `sign_in`. A new person uses `create_account`, then `confirm_account` with the email code. An existing person uses `login`, then `confirm_account` when a code is required. Save the first key from `confirm_account` and send it as a bearer. The developer server turns developer mode on. The player server leaves the account a player. A later confirm does not rotate a key that already exists.
 - The `blazium-games` MCP server enabled in Cursor (this plugin ships it in `mcp.json`)
 
 ## 1. Connect

@@ -2,6 +2,15 @@
 
 The server at `https://mcp.blazium.games/developer` accepts OAuth 2.1 access tokens or MCP API keys, both sent as `Authorization: Bearer <token>`. `https://mcp.blazium.games/mcp` still reaches this server.
 
+## Sign up and sign in with no bearer
+
+Call `initialize` with no token. `tools/list`, `prompts/list`, and `prompts/get` also need no bearer. Other calls still need a token.
+
+- New person: follow `setup_account`. Call `create_account`, then `confirm_account` with the email code.
+- Existing person: follow `sign_in`. Call `login`, then `confirm_account` when the answer is `otp_required`.
+
+Send `accept_legal` and, on the developer server, `accept_developer_terms` only after the human agrees. The developer server turns developer mode on. The player server leaves the account a player. An existing address gets the same answer and is not revealed. `confirm_account` returns that server's first key once (`bgames_mcp_` or `bgames_play_`) and does not return the website session. Save the key and send it as a bearer. A later confirm does not rotate a key that already exists. An authenticator challenge, and choosing or skipping an authenticator, stay on the website. Website signup at https://blazium.games/signup still works.
+
 ## OAuth (recommended)
 
 - Discovery: `https://mcp.blazium.games/.well-known/oauth-protected-resource/mcp` and `/.well-known/oauth-authorization-server` (player server: the same paths ending in `/player`)
