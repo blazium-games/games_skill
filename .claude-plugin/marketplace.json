@@ -22,6 +22,8 @@
         "./skills/blazium-games-keys",
         "./skills/blazium-games-module",
         "./skills/blazium-games-plugin",
+        "./skills/blazium-games-unity",
+        "./skills/blazium-games-unreal",
         "./skills/blazium-games-lobby-pack"
       ]
     },
@@ -51,6 +53,8 @@
         "./skills/blazium-games-keys",
         "./skills/blazium-games-module",
         "./skills/blazium-games-plugin",
+        "./skills/blazium-games-unity",
+        "./skills/blazium-games-unreal",
         "./skills/blazium-games-lobby-pack",
         "./skills/blazium-games-player",
         "./skills/blazium-games-purchases"
