@@ -149,6 +149,17 @@ Amounts are integer US cents. Agents pay only from the stored balance, and only 
 | `get_patron_status` | `developer` (optional) | read | The caller's patron memberships. No card data |
 | `list_patrons` | `page` (optional) | read | Patrons of this developer |
 | `get_patron` | `username` | read | One patron of this developer |
+| `list_tiers` | none | read | Tiers and proposed game links |
+| `create_tier` | `name`, `rank`, `price_cents`, `billing` | write | Rank, billing, and unlock stay fixed after create |
+| `update_tier` | `uid`, optional `name`, `price_cents`, `active` | write | Hide a tier with `active` false |
+| `delete_tier` | `uid` | write | Refused while a membership is pending or active |
+| `list_posts` | `page` (optional) | read | Drafts and published posts |
+| `create_post` | `title`, `status`, `visibility`, `tier_uids` | write | `visibility` is `public` or `tiers` |
+| `update_post` | `uid` plus the create fields | write | Edit a post |
+| `delete_post` | `uid` | write | Remove a post |
+| `create_account` | `email`, `password` | none | No bearer. Follow the `setup_account` prompt |
+| `login` | `email`, `password` | none | No bearer. Follow the `sign_in` prompt |
+| `confirm_account` | `email`, `code` | none | Returns the first `bgames_mcp_` key once |
 
 Payout tools are not deprecated and need `mcp:write` or `mcp:money`.
 
