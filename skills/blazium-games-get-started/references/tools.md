@@ -146,6 +146,9 @@ Amounts are integer US cents. Agents pay only from the stored balance, and only 
 | `start_payout_setup` | none | account, money | Stripe payout setup link for the human |
 | `get_payout_dashboard_link` | none | account, money | One-time Stripe Express dashboard link (`4095` before setup) |
 | `cash_out` | `amount_cents` (at least 2500) | account, money | Cashes out available earnings to the account's own payout account, no approval; the owner is emailed. Up to 72 business hours to the bank |
+| `get_patron_status` | `developer` (optional) | read | The caller's patron memberships. No card data |
+| `list_patrons` | `page` (optional) | read | Patrons of this developer |
+| `get_patron` | `username` | read | One patron of this developer |
 
 Payout tools are not deprecated and need `mcp:write` or `mcp:money`.
 
