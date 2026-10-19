@@ -37,7 +37,7 @@ The player server acts for one player. It sees the account, wallet, and library,
 |---|---|
 | Buy, donate, or top up | [purchases](../blazium-games-purchases/SKILL.md) |
 | See what they own | `get_library` |
-| Set up payouts or cash out earnings | Only when the human asks. `start_payout_setup` (or `get_payout_dashboard_link` once set up) and give them the Stripe link; never enter their details yourself. `cash_out` with the amount they asked for, from the available earnings in `get_wallet`. Tell them it can take up to 72 business hours to reach the bank and that they will get an email |
+| Set up payouts or cash out earnings | Only when the human asks. `start_payout_setup` (or `get_payout_dashboard_link` once set up) and give them the Stripe link; never enter their details yourself. `cash_out` with the amount they asked for, from the available earnings in `get_wallet`. Tell them payouts are processed on weekdays from 8:00am to 5:00pm Pacific and that they will get an email |
 | Something to play, and they haven't said what | `get_shelf` with `tonight`, `unheard_of` when they want something new, or `browser_playable` when they can't install anything, before a wide `recommend` |
 | Something to play right now | `recommend` with what they told you (`minutes`, `party_size`, `intent` in their words, `like_uid`, `os`). Give each pick with its `reasons` and `cautions`; don't add reasons of your own. If the results are empty, relay the `hint` and ask for one more constraint |
 | Why a game was or wasn't suggested | `why_this` with the same inputs; its `blockers` say what kept it out |
