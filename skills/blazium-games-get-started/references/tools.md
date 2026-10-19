@@ -166,7 +166,7 @@ Payout tools are not deprecated and need `mcp:write` or `mcp:money`.
 ## Field values
 
 - `visibility`: `draft` (owner and admins), `owner` (owner only), `invisible` (link only), or `public`
-- `asset_type`: `game`, `application`, `tool`, `mod`, `plugin`, `game_asset`, or `dev_asset`
+- `asset_type`: `game`, `application`, `tool`, `mod`, `plugin`, `game_asset`, `dev_asset`, or `rom`
 - `adult`: marks 18+ content (sexual content or nudity); hidden from search, recommendations and search engines
 - `indexable`: `false` keeps the store page out of search engines and AI crawlers
 - `build_id`: the build UID (for example `004e044e-...`), not a version string
