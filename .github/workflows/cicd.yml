@@ -259,44 +259,6 @@ jobs:
           node -e 'const fs=require("fs"); const v=process.env.VERSION; if(!/^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$/.test(v)) process.exit(1); const p=JSON.parse(fs.readFileSync("package.json","utf8")); if(p.name!=="@blazium-games/skills") process.exit(1); p.version=v; fs.writeFileSync("package.json", JSON.stringify(p,null,2)+"\n"); console.log(p.name+"@"+p.version);'
           npm publish --access public
 
-      - name: Register with Cerebro
-        env:
-          CEREBRO_URL: ${{ secrets.CEREBRO_URL }}
-          BLAZIUM_AUTH: ${{ secrets.BLAZIUM_AUTH }}
-          VERSION: ${{ needs.resolve-version.outputs.simple_version }}
-        run: |
-          set -euo pipefail
-          python3 - <<'PY'
-          import json, os, urllib.request
-          from datetime import datetime, timezone
-          version = os.environ["VERSION"]
-          catalog = json.load(open("skills.json", encoding="utf-8"))
-          hosts = catalog["versions"][version]["hosts"]
-          url = os.environ["CEREBRO_URL"].rstrip("/") + "/api/v1/tools"
-          auth = os.environ["BLAZIUM_AUTH"]
-          released = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-          for host, meta in hosts.items():
-              body = {
-                  "name": "Blazium Games Skills",
-                  "type": "games-skills",
-                  "version": version,
-                  "os": host,
-                  "arch": "pack",
-                  "file": f"https://cdn.blazium.app/games-skills/{version}/{meta['file']}",
-                  "sig": "",
-                  "sha256": meta["sha256"],
-                  "size": meta["size"],
-                  "signing": "",
-                  "released_on": released,
-              }
-              req = urllib.request.Request(url, data=json.dumps(body).encode(), headers={
-                  "Content-Type": "application/json",
-                  "BLAZIUM_AUTH": auth,
-              })
-              with urllib.request.urlopen(req, timeout=60) as resp:
-                  print(host, resp.status)
-          PY
-
       - name: Create or update GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
