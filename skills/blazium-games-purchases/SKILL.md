@@ -98,7 +98,7 @@ Top-ups add a processing fee (shown by `get_payment_options`). Credit can be spe
 ## Rules to tell the human when relevant
 
 - Refunds are only through support@blazium.games: purchases within 7 days and before 2 hours of play. Donations are not refundable.
-- With `player:buy` you can set up payouts (`start_payout_setup`, `get_payout_dashboard_link`; the human opens the Stripe link) and cash out available earnings (`cash_out`, $25 minimum) without approval. Money only goes to the account's own payout account, the owner is emailed after each cash-out, and payouts are processed on weekdays from 8:00am to 5:00pm Pacific.
+- With `player:buy` you can send the human to Balance (`start_payout_setup` and `get_payout_dashboard_link` return that page; the human opens Stripe from Set up payouts with Stripe). `cash_out` of available earnings ($25 minimum) waits for the owner, including a player key. The fee is the account's rate from `get_wallet` (8%, 7%, or 6%, plus $0.25). Money only goes to the Express account on that same account, the owner is emailed after each cash-out, and payouts are processed on weekdays from 8:00am to 5:00pm Pacific.
 
 ## Docs
 
