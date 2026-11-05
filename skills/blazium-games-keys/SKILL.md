@@ -45,7 +45,7 @@ The secret is returned once. Tell the user to store it (CI secret, password mana
 
 ## 4. Update consumers
 
-- MCP key: update the `Authorization: Bearer` header in each MCP client config.
+- MCP key: a pasted client config may contain `Authorization: Bearer`. The agent does not set that header. It calls `elevate_session` with the new key.
 - Deploy key: update `BLAZIUM_ACCESS_TOKEN` and `BLAZIUM_SECRET_KEY` in every CI system, for example with `gh secret set BLAZIUM_ACCESS_TOKEN`.
 
 ## Revoking OAuth access

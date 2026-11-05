@@ -27,7 +27,7 @@ The player server acts for one player. It sees the account, wallet, and library,
 
 ## 2. Check the account
 
-1. Call `get_account`. If `email_verified` is false, call `request_email_code`, ask the human for the code from their inbox, and call `verify_email`. Downloading and buying need a verified email. If `timezone` is empty and you know the human's IANA timezone, call `set_timezone`. Do not use the timezone of the machine you are running on. If `gate` is not empty, tell the human to finish that step at https://blazium.games/account/finish (accept changed terms, finish setup, or choose about an authenticator app). Never do those steps for them.
+1. Call `get_account`. If `email_verified` is false, call `request_email_code`, ask the human for the code from their inbox, and call `verify_email`. Downloading and buying need a verified email. If `timezone` is empty, call `set_timezone`. The person chooses Enter a timezone or Use this machine. Use this machine is the only time you send the machine's IANA zone. If `gate` is not empty, tell the human to finish that step at https://blazium.games/account/finish (accept changed terms, finish setup, or choose about an authenticator app). Never do those steps for them.
 2. Call `get_agent_policy` to see this agent's limit: `unset` (every purchase needs approval), `unlimited`, `monthly`, `yearly`, or `one_time`. Only the human changes it, on the website.
 3. Call `get_wallet` for the available balance.
 
@@ -75,5 +75,6 @@ The player server acts for one player. It sees the account, wallet, and library,
 
 ## References
 
+- [Prompts](./references/prompts.md)
 - [Tools](./references/tools.md)
 - https://docs.blazium.games/docs/mcp/player

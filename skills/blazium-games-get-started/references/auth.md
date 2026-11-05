@@ -1,6 +1,6 @@
 # Authentication
 
-The server at `https://mcp.blazium.games/developer` accepts OAuth 2.1 access tokens or MCP API keys, both sent as `Authorization: Bearer <token>`. `https://mcp.blazium.games/mcp` still reaches this server.
+Connect to `https://mcp.blazium.games/developer` or `/player`. `/mcp` still reaches the developer server. No token is required to connect. A pasted client config may contain `Authorization: Bearer`. The agent does not set that header. It calls `elevate_session`. Do not call the server with Python.
 
 ## Sign up and sign in with no bearer
 
@@ -9,7 +9,7 @@ Call `initialize` with no token. `tools/list`, `prompts/list`, and `prompts/get`
 - New person: follow `setup_account`. Call `create_account`, then `confirm_account` with the email code.
 - Existing person: follow `sign_in`. Call `login`, then `confirm_account` when the answer is `otp_required`.
 
-Send `accept_legal` and, on the developer server, `accept_developer_terms` only after the human agrees. The developer server turns developer mode on. The player server leaves the account a player. An existing address gets the same answer and is not revealed. `confirm_account` returns that server's first key once (`bgames_mcp_` or `bgames_play_`) and does not return the website session. Save the key and send it as a bearer. A later confirm does not rotate a key that already exists. An authenticator challenge, and choosing or skipping an authenticator, stay on the website. Website signup at https://blazium.games/signup still works.
+Send `accept_legal` and, on the developer server, `accept_developer_terms` only after the human agrees. The developer server turns developer mode on. The player server leaves the account a player. An existing address gets the same answer and is not revealed. `create_account` shows Continue or Generate only when the call has no password. Generate shows a 20-character password. `login` never offers Generate. A password already on either call skips the form. The checkbox "Do not return this password. I will copy it." keeps it out of the agent result. When timezone is omitted, the person gets Enter a timezone or Use this machine. Use this machine is the only time the agent may send the machine's IANA zone. `confirm_account` returns that server's first key once (`bgames_mcp_` or `bgames_play_`) and does not return the website session. The connection becomes logged in only after sign-in succeeds. A later connection calls `elevate_session`. Do not set Authorization. A later confirm does not rotate a key that already exists. An authenticator challenge, and choosing or skipping an authenticator, stay on the website. Website signup at https://blazium.games/signup still works.
 
 ## OAuth (recommended)
 

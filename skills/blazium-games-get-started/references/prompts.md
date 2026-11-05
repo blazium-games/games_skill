@@ -2,10 +2,14 @@
 
 | Prompt | Arguments | Purpose |
 |--------|-----------|---------|
+| `setup_account` | none | Create an account, confirm the email code, and save the first key. A later connection calls `elevate_session`. Do not set Authorization |
+| `sign_in` | none | Sign in with a typed password. The connection is logged in only after sign-in succeeds |
 | `draft_game_page` | `pitch` (required) | Draft a name, one-line tagline, and two-paragraph description from a short pitch |
 | `improve_game_copy` | `description` (required) | Rewrite an existing store description while keeping the facts |
 | `analytics_summary` | `uid` (required) | Summarize the week's visitors using `get_game_analytics` |
 | `bootstrap_game` | `pitch`, `uid` (both optional) | Create or find a store page, read deploy info and builds, and issue rotated deploy keys so an agent can ship from CI |
+| `setup_oauth_app` | `uid` | Register one sign-in application. If the owner must approve, no secret was issued. The person opens `confirm_url`, then retry with the same `idempotency_key` |
+| `review_oauth_apps` | `uid` | Report each sign-in application. Do not create, rotate, or delete on its own |
 
 ## `bootstrap_game` steps
 
