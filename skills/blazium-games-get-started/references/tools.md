@@ -157,9 +157,10 @@ Amounts are integer US cents. Agents pay only from the stored balance, and only 
 | `create_post` | `title`, `status`, `visibility`, `tier_uids` | write | `visibility` is `public` or `tiers` |
 | `update_post` | `uid` plus the create fields | write | Edit a post |
 | `delete_post` | `uid` | write | Remove a post |
-| `create_account` | `email`, `password` | none | No bearer. Follow the `setup_account` prompt |
-| `login` | `email`, `password` | none | No bearer. Follow the `sign_in` prompt |
-| `confirm_account` | `email`, `code` | none | Returns the first `bgames_mcp_` key once |
+| `create_account` | `email`, optional `password`, `timezone` | none | Continue or Generate only when password is omitted. Enter a timezone or Use this machine when timezone is omitted |
+| `login` | `email`, optional `password` | none | The person types the password. Generate is not offered. Elevated only after sign-in succeeds |
+| `confirm_account` | `email`, `code` | none | Returns the first `bgames_mcp_` key once and elevates this connection |
+| `elevate_session` | `key` | none | Signs this connection in with a saved key. No Authorization header |
 
 Payout tools are not deprecated and need `mcp:write` or `mcp:money`.
 
