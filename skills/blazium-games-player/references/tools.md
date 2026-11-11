@@ -25,7 +25,7 @@ Server: `https://mcp.blazium.games/player`. Scopes: `player:read`, `player:write
 | `get_approval` | read | State of an approval |
 | `confirm_approval` | write | Approve with the human's emailed code |
 | `get_library` | read | Owned games, refund windows, play time |
-| `get_download_link` | read | 5-minute signed download URL |
+| `get_download_link` | read | 5-minute signed URL for a Windows, Linux, or content-pack file. A web build is hosted and is not downloaded. |
 | `get_agent_policy` | read | This agent's spending limit |
 | `start_payout_setup` | buy | Start or continue Stripe payout setup; returns a link only the human opens to enter identity, tax, and bank details |
 | `get_payout_dashboard_link` | buy | One-time Stripe Express dashboard link for the human (`4095` until setup has started) |
