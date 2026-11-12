@@ -60,7 +60,7 @@ All tools call the Blazium Games API on behalf of the connected user. `uid` acce
 | `rotate_steam_key` | `uid`, `confirm` | `mcp:steam.manage` | Replaces the Web API key. The new key is returned once |
 | `resync_steam` | `uid`, `confirm`, optional `groups`, `web_api_key` | `mcp:steam.manage` | Imports the chosen groups again |
 | `import_steam_game` | `app_id`, `web_api_key`, `confirm`, optional `groups`, `uid` | developer | Imports a Steam page. `confirm` only after the human agrees |
-| `set_anonymous_downloads` | `uid`, `enabled`, `confirm_no_license` | write | Anonymous downloads. Turning them on needs the human's confirm, and a free game |
+| `set_anonymous_downloads` | `uid`, `enabled`, `confirm_no_license` | `mcp:write` | Anonymous downloads, the full web build, and the web demo for signed-out visitors. Turning them on needs the human's confirm, and a free game |
 | `set_adult_content` | `show`, `confirm_18` | account, write | Adult listings. Turning them on needs the human to confirm they are 18 or older |
 | `list_copyright_notices` | none | | Paid copyright (DMCA) notices about the account's content, with status and how many of its links each names |
 | `get_copyright_notice` | `uid` | | One notice: claimant, work, statements, the account's named links, staff messages, decision, and `reply_to`. Read only; the human replies by email with the reference in the subject |
@@ -199,7 +199,10 @@ Tool errors come back as `API <status>: <body>`. Common bodies:
 | `4214` | Waiting for the human's approval (a normal result, not an error) |
 | `4215` | The human denied the request |
 | `4216` | Wrong or expired approval code |
-| `4083` | Website only (account settings, approval links, key management) |
+| `4083` | Website only (account settings, approval links, key management). It does not apply to `set_anonymous_downloads` |
+| `4109` | Anonymous downloads were turned on without `confirm_no_license` |
+| `4113` | Anonymous downloads are only available on a free listing |
+| `4114` | A price or an edition was set while anonymous downloads are on |
 | `4071` | Taxonomy value not allowed |
 | `4072` | Similar title isn't a public game, or is this game |
 | `4225` | Listing check failed, so the page can't go public. Run `validate_listing` |
