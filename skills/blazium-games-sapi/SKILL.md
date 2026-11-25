@@ -56,16 +56,16 @@ Promote by activating the same checksum on `stable`: `activate_sapi_pack` with t
 
 ## Run it
 
-- `get_sapi_logs` (filter by `logic`, `level`, or the `request_id` from a failed call) and `get_sapi_usage` for storage. `read_only: true` means the game is over a data limit after its plan changed: reads and deletes work, writes return `4308` until the plan is back or data is deleted.
-- `get_sapi_data`, `set_sapi_data`, and `delete_sapi_data` change one key at a time. Deleting all data is website-only.
+- `get_sapi_logs` (filter by `logic`, `level`, `since`/`until`, or the `request_id` from a failed call; logs are stored, and a full page returns `next_cursor` to pass as `cursor` for older lines) and `get_sapi_usage` for storage. `read_only: true` means the game is over a data limit after its plan changed: reads and deletes work, writes return `4308` until the plan is back or data is deleted.
+- `get_sapi_data`, `set_sapi_data`, and `delete_sapi_data` change one key at a time. `reset_sapi_data` deletes many: pass `scope` (`global`, `channel` or `user`) and optional `channel`, `user`, `prefix`, with `dry_run` to count first, then `confirm` to delete (the owner approves). `chauffeur sapi data reset` does the same. Deleting all of a game's data is website-only.
 - `set_sapi_config` sets remote config (`public: true` serves it at `/v1/{game_uid}/_config`). `set_sapi_secret` stores write-only secrets; no tool returns a value.
 - `list_sapi_schedules` shows cron logic and recent runs.
 
 ## Calling it
 
-- Godot: the `BlaziumSapi` node, `call_logic(logic, args, opts)`, with `call_completed` and `call_failed` signals. It sends the session, channel, and an `Idempotency-Key`, and retries `429` and `503`.
-- Any HTTP client: `Authorization: Bearer <session token>` for `auth = "user"`, `X-Sapi-Key` with a game server key (`request_server_key`) for `service`, `X-Blazium-Channel` for the channel, and `Idempotency-Key` on writes that may be retried.
-- Unity and Unreal have no Scripted API client; use anonymous or service logic over HTTP.
+- Godot: the `BlaziumSapi` node, `invoke(logic, args, opts)` (`call_logic` is an alias), with `call_completed` and `call_failed` signals. It sends a short-lived token for the game, never the login session, plus the channel and an `Idempotency-Key`, and retries `429` and `503`.
+- Any HTTP client: `Authorization: Bearer <scoped token>` for `auth = "user"` (the SDK or web player requests it; a login session token is not what the Scripted API takes), `X-Sapi-Key` with a game server key (`request_server_key`) for `service`, `X-Blazium-Channel` for the channel, and `Idempotency-Key` on writes that may be retried.
+- Unity (`BlaziumUnitySapi.Create()`, `Call` from a coroutine) and Unreal (`UBlaziumSapi::CallLogic`) have clients. They ask the SDK for the token (`BlaziumApi.RequestToken("sapi")`). A browser build asks `POST /blazium/token` on the play origin.
 - Discord activities need the `/blazium/sapi` to `sapi.blazium.online` URL mapping.
 
 ## Errors
