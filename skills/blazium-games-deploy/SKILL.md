@@ -24,7 +24,7 @@ Register a build, upload its files, and keep the returned `build_id` for crash r
 
 ## 1. Read deploy info
 
-Call `get_deploy_info` with the game's `uid` or vanity name. It returns (no secrets):
+Call `get_deploy_info` with the game's `uid` or vanity name. get_deploy_info lists the short code only. It does not include the access token or the secret. It returns:
 
 | Field | Use |
 |-------|-----|
@@ -32,7 +32,7 @@ Call `get_deploy_info` with the game's `uid` or vanity name. It returns (no secr
 | `endpoints.crash_ingest` | Crash reporter endpoint |
 | `endpoints.events_ingest` | Events endpoint |
 | `builds[]`, `latest_build_id` | Existing builds and their `build_id` |
-| `keys[]` | Prefixes of existing deploy keys |
+| `keys[]` | Short code only. It is the start of the access token and is not enough to upload |
 | `env` | Env var names to set in CI (`BLAZIUM_ACCESS_TOKEN`, `BLAZIUM_SECRET_KEY`, `BLAZIUM_API_URL`, `BLAZIUM_UPLOAD_URL`) plus `BLAZIUM_GAMES_APP_ID` and the latest `BLAZIUM_GAMES_BUILD_ID` for crash reporting |
 
 ## 2. Get deploy credentials
@@ -41,9 +41,9 @@ If the user already has an access token and secret stored in CI, skip this step.
 
 Issuing a key needs developer mode on the account; `4105` means the human must turn it on at https://blazium.games/settings first.
 
-Otherwise **warn first**: `request_deploy_key` immediately invalidates every previous deploy key for that game, which breaks any pipeline still using an old key. After the user confirms, call `request_deploy_key` with the `uid`. It returns `access_token` and `secret_key` once.
+Otherwise **warn first**: Creating a new deploy key replaces the previous one. Uploads that used the old key stop working. After the user confirms, call `request_deploy_key` with the `uid`. It returns both values once, after the project owner approves. The access token is `BLAZIUM_ACCESS_TOKEN`, sent as `X-Access-Token`. It can be copied later from the Deploy keys tab. The secret is `BLAZIUM_SECRET_KEY`, sent as `X-Secret-Key`. It cannot be shown again.
 
-Tell the user to store them as CI secrets (for example GitHub Actions secrets `BLAZIUM_ACCESS_TOKEN` and `BLAZIUM_SECRET_KEY`) or in their shell environment. Do not write them into files that are committed. Do not repeat them after they are stored, and don't pass the secret with `--secret` (other processes can see it).
+Tell the user to store the access token and the secret as CI values (for example GitHub Actions secrets named `BLAZIUM_ACCESS_TOKEN` and `BLAZIUM_SECRET_KEY`) or in their shell environment. Do not write them into files that are committed. Do not repeat them after they are stored, and don't pass the secret with `--secret` (other processes can see it).
 
 ## 3a. Upload with chauffeur (recommended)
 
@@ -55,7 +55,7 @@ chauffeur reads `BLAZIUM_ACCESS_TOKEN` and `BLAZIUM_SECRET_KEY` from the environ
 4. Generate `addfiles.yml`: `chauffeur setfiles --version 1.0.0 --os windows --arch x86_64 --files ./export/windows`
 5. Upload the files, and symbols if the user has them: `chauffeur addfiles --asset addfiles.yml --symbols ./symbols`
 
-`addfiles` reuses the build with the same version, type, OS, arch, and channel (keeping its notes), zips the files, checksums them, and uploads them, in 16 MB chunks that resume after a dropped connection when over 64 MB. Keep `version` the same in both YAML files.
+`addfiles` reuses the build with the same version, type, OS, arch, and channel (keeping its notes), zips the files, checksums them, and uploads them, in 16 MB chunks that resume after a dropped connection when over 64 MB. Keep `version` the same in both YAML files. Add `--demo` to an `os=web` upload (or `demo: true` in `addfiles.yml`) to publish it as the browser demo; `--for-sale`/`--price-cents`, `--designations` and `--embed-supported` set the other web-player choices, and leaving them all out keeps what the website or `set_web_player` chose.
 
 Example `build.yml`:
 

@@ -39,6 +39,7 @@ A game on Blazium Games does not have to be made with the Blazium engine. The up
 | `blazium-games-unity` | Unity package `games_unity` |
 | `blazium-games-unreal` | Unreal plugin `games_unreal` |
 | `blazium-games-lobby-pack` | `chauffeur lobby publish` |
+| `blazium-games-sapi` | `chauffeur sapi publish`, `get_sapi` |
 | `blazium-games-player` | [Player MCP](https://docs.blazium.games/docs/mcp/player) |
 | `blazium-games-purchases` | [Agent purchases](https://docs.blazium.games/docs/payments/agent-purchases) |
 

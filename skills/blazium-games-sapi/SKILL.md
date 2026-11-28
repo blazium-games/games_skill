@@ -1,0 +1,84 @@
+---
+name: blazium-games-sapi
+description: Write, test, publish, and run Scripted API Luau logic for a game at sapi.blazium.online, with stored data, leaderboards, schedules, secrets, and remote config.
+license: MIT
+---
+
+# Scripted API
+
+The Scripted API runs a game's own Luau logic at `https://sapi.blazium.online/v1/{game_uid}/{logic}`, so a game needs no server of its own for scores, rewards, inventory rules, season resets, or webhooks. Guide: https://docs.blazium.games/docs/scripted-api. Every function, header, error code, and limit: https://docs.blazium.games/docs/scripted-api-reference.
+
+## Before you start
+
+1. `get_sapi` shows whether it is on, the plan's limits, the active pack per release channel, and the base URL.
+2. If it is off, `set_sapi` with `enabled: true` turns it on after the account owner approves. A deploy key cannot turn it on. Set `anonymous_enabled` only if logic marked `auth = "anonymous"` should run without a signed-in player, and `allowed_origins` only for web pages that call it directly.
+
+## Write a pack
+
+A pack is a folder of `.luau` files. Top-level files are routes (1 to 64 characters of `a-z 0-9 _ -`). Files in folders are modules loaded with `require("lib.name")`. `*.test.luau` files are tests. Each logic file returns a table:
+
+```lua
+return {
+    auth = "user",                       -- anonymous | user | service | signed
+    methods = { "POST" },
+    uses = { "boards", "progress" },     -- boards, secrets, progress, items, http, webhook, lobby
+    data = { read = { "user" }, write = { "user" } },  -- global, channel, user
+    rate = { per_user = 30, window = 60 },
+    handler = function(req)
+        local best = math.max(data.user:get("best") or 0, req.body.score)
+        data.user:set("best", best)
+        board("high"):submit(req.body.score)
+        return { best = best }
+    end,
+}
+```
+
+- Declare every data scope and `uses` entry the handler touches. Undeclared access raises `not_declared`.
+- Validate input with `std.validate(req.body, schema)` and return `{ status = 400, body = ... }` on failure.
+- All writes in a request apply together when the handler returns. An error discards them.
+- `http` and `webhook` need `http = { allow = { "api.example.com" } }`.
+- Progress writes need `scripted_api` in the achievement, stat, or event writers (`set_achievements`, `set_stats`, `set_funnels`).
+- Secrets come from `secrets.get(name)` with `"secrets"` in `uses`. Never put a secret value in the pack.
+
+## Features
+
+Ten ready-made features (`hub`, `daily`, `wheel`, `chests`, `quests`, `leaderboards`, `competitions`, `economy`, `lives`, `meta`) answer sub-paths such as `POST /v1/{game_uid}/daily/claim`; the sub-path is `req.action`. A feature runs only after the game owner turns it on from the website. Adding files to a pack turns nothing on.
+
+- `get_sapi_features` lists what is on, what each needs and which are sensitive. `get_sapi_feature_history` shows who changed it.
+- `enable_sapi_feature` changes nothing: give the owner the link it returns. Never ask for the owner's password or try to work around it. A deploy key and an MCP key can turn a feature off (`disable_sapi_feature`, with `cascade` for features that need it), never on.
+- A call to a feature that is off answers `403` `feature_disabled` (`4323`) before any script runs. Treat it as "ask the owner", not as a bug in the script.
+- To edit a live pack, `get_sapi_pack_files` and `get_sapi_file` read it, `chauffeur sapi pull --dir sapi` downloads it, then test and publish again.
+- A game that started before features existed keeps running every feature until the owner chooses to manage them.
+
+## Test, then publish
+
+Run these with the game's deploy key configured for chauffeur:
+
+```bash
+chauffeur sapi validate --dir sapi --plan free
+chauffeur sapi test --dir sapi
+chauffeur sapi publish --dir sapi --channel beta --activate
+```
+
+`chauffeur sapi dev --dir sapi --channel beta` validates, publishes and activates the pack on that channel of the live game; there is no local emulator. `--channel` is required on `dev`, `publish` and `activate`. `validate` and `test` use the `games_sapi` binary from `--binary`, `SAPI_BINARY` or `PATH` (Linux; use WSL on Windows). MCP never uploads a pack.
+
+Promote by activating the same checksum on `stable`: `activate_sapi_pack` with the checksum from `list_sapi_packs`, or `chauffeur sapi activate <checksum> --channel stable`. Over MCP this waits for the owner's approval. Roll back by activating an older checksum. An empty checksum (`none` in chauffeur) stops a channel.
+
+## Run it
+
+- `get_sapi_logs` (filter by `logic`, `level`, `since`/`until`, or the `request_id` from a failed call; logs are stored, and a full page returns `next_cursor` to pass as `cursor` for older lines) and `get_sapi_usage` for storage. `read_only: true` means the game is over a data limit after its plan changed: reads and deletes work, writes return `4308` until the plan is back or data is deleted.
+- `get_sapi_data`, `set_sapi_data`, and `delete_sapi_data` change one key at a time. `reset_sapi_data` deletes many: pass `scope` (`global`, `channel` or `user`) and optional `channel`, `user`, `prefix`, with `dry_run` to count first, then `confirm` to delete (the owner approves). `chauffeur sapi data reset` does the same. Deleting all of a game's data is website-only.
+- `set_sapi_config` sets remote config (`public: true` serves it at `/v1/{game_uid}/_config`). `set_sapi_secret` stores write-only secrets; no tool returns a value.
+- `list_sapi_schedules` shows cron logic and recent runs.
+- Lobby scripts have their own data store (`get_lobby_data`, `set_lobby_data`, `reset_lobby_data`, `get_lobby_config`, `list_lobby_secrets`, `get_lobby_usage`; Grow and above). It is separate from the Scripted API's data. Lobby scripts reach the Scripted API with `sapi.read` and `sapi.call`, and Scripted API logic reaches lobby scripts with `lobby.call`, once the owner turns on the `lobby` capability.
+
+## Calling it
+
+- Godot: the `BlaziumSapi` node, `invoke(logic, args, opts)` (`call_logic` is an alias), with `call_completed` and `call_failed` signals. It sends a short-lived token for the game, never the login session, plus the channel and an `Idempotency-Key`, and retries `429` and `503`.
+- Any HTTP client: `Authorization: Bearer <scoped token>` for `auth = "user"` (the SDK or web player requests it; a login session token is not what the Scripted API takes), `X-Sapi-Key` with a game server key (`request_server_key`) for `service`, `X-Blazium-Channel` for the channel, and `Idempotency-Key` on writes that may be retried.
+- Unity (`BlaziumUnitySapi.Create()`, `Call` from a coroutine) and Unreal (`UBlaziumSapi::CallLogic`) have clients. They ask the SDK for the token (`BlaziumApi.RequestToken("sapi")`). A browser build asks `POST /blazium/token` on the play origin.
+- Discord activities need the `/blazium/sapi` to `sapi.blazium.online` URL mapping.
+
+## Errors
+
+Codes `4300` to `4322` come from the Scripted API. The common ones: `4302` no such logic or no active pack, `4304` sign-in missing, `4307` rate limited (honor `Retry-After`), `4308` over a plan limit, `4310` script error (read the logs for that request id), `4311` time or memory budget, `4317` unknown release channel.

@@ -17,6 +17,6 @@
 2. `create_game` from the pitch with `draft` visibility if no matching game exists
 3. `get_deploy_info`
 4. `list_game_builds` for existing `build_id` values
-5. `request_deploy_key` (invalidates previous upload keys; returns `X-Access-Token` and `X-Secret-Key` once)
+5. `request_deploy_key`. Creating a new deploy key replaces the previous one. Uploads that used the old key stop working. It returns both values once, after the project owner approves. The access token can be copied later from the Deploy keys tab. The secret cannot.
 6. After `POST /api/v1/tool/upload/build`, store the returned `build_id` as `BLAZIUM_GAMES_BUILD_ID` and send it as `X-Build-Id` from crash reporters
 7. Print env var names and URLs. Do not echo secrets after the user has stored them
