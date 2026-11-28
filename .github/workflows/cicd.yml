@@ -13,8 +13,8 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-python@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
         with:
           python-version: "3.12"
       - name: Validate skills and marketplace paths
@@ -26,25 +26,32 @@ jobs:
     outputs:
       simple_version: ${{ steps.finalize.outputs.simple_version }}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
 
       - name: Get Version with Bioblaze/game-semver-action
         if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
-        uses: Bioblaze/game-semver-action@v10
+        # Pinned to the reviewed commit behind v10. Review the new commit before changing this SHA.
+        uses: Bioblaze/game-semver-action@ed2e83561fc3b591c6046da0a36722994c659657 # v10
         id: version
         with:
           personal_github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Finalize version (0.1.0 floor, CDN and npm monotonic)
         id: finalize
+        env:
+          COMPUTED: ${{ steps.version.outputs.simple_version }}
         run: |
           set -euo pipefail
+          SEMVER_RE='^[0-9]+\.[0-9]+\.[0-9]+$'
           if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
             CANDIDATE="${GITHUB_REF#refs/tags/v}"
           else
-            COMPUTED="${{ steps.version.outputs.simple_version }}"
+            if [[ ! "$COMPUTED" =~ $SEMVER_RE ]]; then
+              echo "refusing version from semver action: not MAJOR.MINOR.PATCH" >&2
+              exit 1
+            fi
             BASE="0.1.0"
             CDN_LATEST="$(curl -fsSL -H 'Cache-Control: no-cache' https://cdn.blazium.app/games-skills/skills.json | jq -r '.latest // empty' || true)"
             NPM_LATEST="$(curl -fsSL -H 'Cache-Control: no-cache' https://registry.npmjs.org/@blazium-games%2fskills/latest | jq -r '.version // empty' || true)"
@@ -87,22 +94,30 @@ jobs:
             done
             echo "computed=${COMPUTED} base=${BASE} cdn_latest=${CDN_LATEST:-none} npm_latest=${NPM_LATEST:-none} => ${CANDIDATE}"
           fi
-          test -n "$CANDIDATE"
+          if [[ ! "$CANDIDATE" =~ $SEMVER_RE ]]; then
+            echo "refusing version: not MAJOR.MINOR.PATCH" >&2
+            exit 1
+          fi
           echo "simple_version=${CANDIDATE}" >> "$GITHUB_OUTPUT"
 
   pack-claude:
     needs: [validate, resolve-version]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - name: Zip Claude marketplace
+        env:
+          VER: ${{ needs.resolve-version.outputs.simple_version }}
         run: |
-          VER="${{ needs.resolve-version.outputs.simple_version }}"
+          if [[ ! "$VER" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "refusing version: not MAJOR.MINOR.PATCH" >&2
+            exit 1
+          fi
           STAGE="blazium-games-skills-claude-${VER}"
           mkdir -p "${STAGE}"
           cp -a skills .claude-plugin mcp.json README.md SKILL_TREE.md LICENSE GROK.md "${STAGE}/"
           zip -r "${STAGE}.zip" "${STAGE}"
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: claude
           path: blazium-games-skills-claude-*.zip
@@ -111,19 +126,24 @@ jobs:
     needs: [validate, resolve-version]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-python@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
         with:
           python-version: "3.12"
       - name: Zip Cursor plugins
+        env:
+          VER: ${{ needs.resolve-version.outputs.simple_version }}
         run: |
           python scripts/sync_packs.py
-          VER="${{ needs.resolve-version.outputs.simple_version }}"
+          if [[ ! "$VER" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "refusing version: not MAJOR.MINOR.PATCH" >&2
+            exit 1
+          fi
           STAGE="blazium-games-skills-cursor-${VER}"
           mkdir -p "${STAGE}"
           cp -a plugins .cursor-plugin mcp.json README.md SKILL_TREE.md LICENSE GROK.md "${STAGE}/"
           zip -r "${STAGE}.zip" "${STAGE}"
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: cursor
           path: blazium-games-skills-cursor-*.zip
@@ -132,19 +152,24 @@ jobs:
     needs: [validate, resolve-version]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-python@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
         with:
           python-version: "3.12"
       - name: Zip Codex plugins
+        env:
+          VER: ${{ needs.resolve-version.outputs.simple_version }}
         run: |
           python scripts/sync_packs.py
-          VER="${{ needs.resolve-version.outputs.simple_version }}"
+          if [[ ! "$VER" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "refusing version: not MAJOR.MINOR.PATCH" >&2
+            exit 1
+          fi
           STAGE="blazium-games-skills-codex-${VER}"
           mkdir -p "${STAGE}"
           cp -a plugins .agents mcp.json README.md SKILL_TREE.md LICENSE GROK.md "${STAGE}/"
           zip -r "${STAGE}.zip" "${STAGE}"
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: codex
           path: blazium-games-skills-codex-*.zip
@@ -155,16 +180,16 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/download-artifact@v8
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           name: claude
           path: dist/claude
-      - uses: actions/download-artifact@v8
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           name: cursor
           path: dist/cursor
-      - uses: actions/download-artifact@v8
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           name: codex
           path: dist/codex
@@ -175,9 +200,11 @@ jobs:
         run: |
           set -euo pipefail
           python3 - <<'PY'
-          import hashlib, json, os
+          import hashlib, json, os, re
           from pathlib import Path
           version = os.environ["VERSION"]
+          if not re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+", version):
+              raise SystemExit("refusing version: not MAJOR.MINOR.PATCH")
           hosts = {}
           for host in ("claude", "cursor", "codex"):
               matches = list(Path("dist").joinpath(host).glob("*.zip"))
@@ -198,7 +225,7 @@ jobs:
           Path("pack-paths.txt").write_text("\n".join(f"{k} {v['path']}" for k, v in hosts.items()) + "\n", encoding="utf-8")
           PY
 
-      - uses: BetaHuhn/do-spaces-action@v2
+      - uses: BetaHuhn/do-spaces-action@47f34d70b97cced8e8dbb50e2ecfaaf4381593a7 # v2
         with:
           access_key: ${{ secrets.DO_ACCESS_KEY }}
           secret_key: ${{ secrets.DO_SECRET_KEY }}
@@ -207,7 +234,7 @@ jobs:
           source: dist/claude
           out_dir: games-skills/${{ needs.resolve-version.outputs.simple_version }}
 
-      - uses: BetaHuhn/do-spaces-action@v2
+      - uses: BetaHuhn/do-spaces-action@47f34d70b97cced8e8dbb50e2ecfaaf4381593a7 # v2
         with:
           access_key: ${{ secrets.DO_ACCESS_KEY }}
           secret_key: ${{ secrets.DO_SECRET_KEY }}
@@ -216,7 +243,7 @@ jobs:
           source: dist/cursor
           out_dir: games-skills/${{ needs.resolve-version.outputs.simple_version }}
 
-      - uses: BetaHuhn/do-spaces-action@v2
+      - uses: BetaHuhn/do-spaces-action@47f34d70b97cced8e8dbb50e2ecfaaf4381593a7 # v2
         with:
           access_key: ${{ secrets.DO_ACCESS_KEY }}
           secret_key: ${{ secrets.DO_SECRET_KEY }}
@@ -225,7 +252,7 @@ jobs:
           source: dist/codex
           out_dir: games-skills/${{ needs.resolve-version.outputs.simple_version }}
 
-      - uses: BetaHuhn/do-spaces-action@v2
+      - uses: BetaHuhn/do-spaces-action@47f34d70b97cced8e8dbb50e2ecfaaf4381593a7 # v2
         with:
           access_key: ${{ secrets.DO_ACCESS_KEY }}
           secret_key: ${{ secrets.DO_SECRET_KEY }}
@@ -234,7 +261,7 @@ jobs:
           source: skills.json
           out_dir: games-skills
 
-      - uses: BetaHuhn/do-spaces-action@v2
+      - uses: BetaHuhn/do-spaces-action@47f34d70b97cced8e8dbb50e2ecfaaf4381593a7 # v2
         with:
           access_key: ${{ secrets.DO_ACCESS_KEY }}
           secret_key: ${{ secrets.DO_SECRET_KEY }}
@@ -243,7 +270,7 @@ jobs:
           source: skills.json
           out_dir: games-skills/${{ needs.resolve-version.outputs.simple_version }}
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version: 24
           registry-url: https://registry.npmjs.org
