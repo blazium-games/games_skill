@@ -33,6 +33,7 @@ New to Blazium Games? Start with [blazium-games-get-started](skills/blazium-game
 | [blazium-games-unity](skills/blazium-games-unity/SKILL.md) | Unity package `com.blazium.games` | Public `games_unity` |
 | [blazium-games-unreal](skills/blazium-games-unreal/SKILL.md) | Unreal plugin `BlaziumGames` | Public `games_unreal` |
 | [blazium-games-lobby-pack](skills/blazium-games-lobby-pack/SKILL.md) | Publish a Luau lobby pack | `chauffeur lobby publish` |
+| [blazium-games-sapi](skills/blazium-games-sapi/SKILL.md) | Write, test, and publish Scripted API logic | `chauffeur sapi publish`, `get_sapi` |
 | [blazium-games-player](skills/blazium-games-player/SKILL.md) | Recommendations, catalog search, reviews, bug reports, friends, launcher links, game chat, and chat tokens for IRC clients | [Player MCP](https://docs.blazium.games/docs/mcp/player), [Game chat](https://docs.blazium.games/docs/storefront/chat), [Chat Rules](https://blazium.games/chat-rules) |
 | [blazium-games-purchases](skills/blazium-games-purchases/SKILL.md) | Buy, donate, and top up within a spending limit | [Agent purchases](https://docs.blazium.games/docs/payments/agent-purchases), [Top up](https://docs.blazium.games/docs/payments/top-up), [Buying](https://docs.blazium.games/docs/payments/buying) |
 

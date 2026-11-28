@@ -24,7 +24,7 @@ Go from "players are crashing" to a root cause and a fix in the user's code.
 1. Call `list_crash_groups` with the game `uid`. Each group is one cause (top stack frames, or the crash message and platform before a stackwalk), most recently seen first (up to 100 groups), with counts per build and a `sample_crash_id`.
 2. A group whose reports all come from the newest build usually means a regression in that build.
 3. Pick the crash the user named, or the `sample_crash_id` of the group with the highest count. `list_game_crashes` lists individual reports when you need more than the sample.
-4. Call `list_bug_tickets` for the player's side: what they were doing, in their words. A ticket with an attached dump or log has a `crash_id` you can read like any other crash.
+4. Call `list_bug_tickets` and follow `next_page` for the player's side: what they were doing, in their words. A ticket with an attached dump or log has a `crash_id` you can read like any other crash. `request_bug_screenshot` returns a link. `get_bug_log` returns one page; call it again with `next_offset`. Saving the files is `chauffeur bugs pull`.
 
 ## 2. Read the report
 

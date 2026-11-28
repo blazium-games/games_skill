@@ -11,7 +11,7 @@ Blazium Games has two kinds of credentials:
 | Credential | Used by | Rotate with | List with |
 |------------|---------|-------------|-----------|
 | MCP API key (`bgames_mcp_...`) | MCP clients without OAuth | `request_mcp_key` | `list_mcp_keys` |
-| Deploy key (`access_token` + `secret_key`) | chauffeur CLI and CI uploads (builds, symbols, store images) | `request_deploy_key` | `get_deploy_info` (`keys[]`) |
+| Deploy key (access token and secret) | chauffeur CLI and CI uploads (builds, symbols, store images) | `request_deploy_key` | `get_deploy_info` (`keys[]`, short code only). The access token stays on the Deploy keys tab |
 
 ## Invoke This Skill When
 
@@ -26,16 +26,16 @@ Blazium Games has two kinds of credentials:
 ## 1. Inspect
 
 - MCP keys: call `list_mcp_keys`. Only prefixes are returned.
-- Deploy keys: call `get_deploy_info` with the game `uid` and read `keys[]` (`uid`, `prefix`, `created_at`).
+- Deploy keys: call `get_deploy_info` with the game `uid` and read `keys[]` (`uid`, `prefix`, `created_at`). get_deploy_info lists the short code only. It does not include the access token or the secret. The short code is the start of the access token and is not enough to upload. The access token stays on the Deploy keys tab.
 
 ## 2. Warn
 
 Rotation is immediate and destructive:
 
 - `request_mcp_key` invalidates **every** previous MCP API key on the account. Any client using an old key stops working. OAuth connections are not affected.
-- `request_deploy_key` invalidates **every** previous deploy key for that game. Any pipeline using an old key fails its next upload.
+- `request_deploy_key` replaces the previous key and returns both values once, after the project owner approves. The access token can be copied later from the Deploy keys tab. The secret cannot. Creating a new deploy key replaces the previous one. Uploads that used the old key stop working.
 
-Ask the user to confirm and to name where the new secret will be stored.
+Ask the user to confirm and to name where the new access token and secret will be stored.
 
 ## 3. Rotate
 
@@ -71,10 +71,6 @@ Redeemable game keys are not credentials; they give players a copy of the game. 
 ## Read-only tokens
 
 If the user approved the connection with **Read-only access**, the token only has `mcp:read`. Rotation tools then fail with HTTP 403, code 4031 ("This token is read-only"). Ask the user to reconnect without the read-only option, or to rotate on the website. A token from a narrower preset without `mcp:keys.manage` gets `4073`; reconnect with the **Keys** or **Full access** preset.
-
-## Mint keys
-
-A mint key is a 128-character secret for one game. `request_mint_key` returns it once. It can mint items and, for a named player, set stats, socket, unsocket, and use. It cannot edit the catalog, turn Steam on, or sell. Players and the game client cannot do those actions. `mcp:keys.manage` covers mint keys. `mcp:catalog.write` does not.
 
 ## Docs
 

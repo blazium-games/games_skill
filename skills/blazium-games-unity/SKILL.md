@@ -16,4 +16,4 @@ The public `ReportBug` method always sends the in-game report. An empty build id
 
 `record_standard_events` is one batch of launch events with zero times, not a hook for each moment. Item calls are forwarded to the library. The server still rejects `socket_item`, `unsocket_item`, `set_item_stats`, and `use_item` on a player session.
 
-The long guide is [Engines](https://docs.blazium.games/docs/engines).
+The long guide is [Unity and the native library](https://docs.blazium.games/docs/unity). [Engines](https://docs.blazium.games/docs/engines) compares Godot, Unity, and Unreal.
